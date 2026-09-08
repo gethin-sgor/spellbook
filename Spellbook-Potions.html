@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Spellbook — Potions</title>
+<style>
+:root{
+  --bg:#14120E; --card:#221E17; --card2:#2E281E; --line:#4A4132;
+  --gold:#F0C24E; --gold-dim:#B08F35; --cream:#F5F1E8; --muted:#BCAF95;
+  --pre:#5FD69B; --root:#F0C24E; --suf:#6FB6F0;
+  --green:#5FD6A4; --pink:#FF8FB1;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  background:radial-gradient(1100px 780px at 50% -8%, #3A3020 0%, var(--bg) 62%);
+  background-attachment:fixed; color:var(--cream);
+  font-family:"Trebuchet MS",Verdana,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  min-height:100vh; overflow-x:hidden; position:relative;
+  touch-action:manipulation;
+}
+body::before{
+  content:'';position:fixed;top:0;left:0;right:0;bottom:0;
+  background-image:url('overlay-dark.png');background-attachment:fixed;
+  opacity:0.18;pointer-events:none;z-index:0;
+}
+.wrap{position:relative;z-index:1;max-width:760px;margin:0 auto;padding:22px 18px 140px}
+h1{font-size:clamp(27px,6.6vw,40px);line-height:1.15;margin:0 0 10px;color:var(--gold);letter-spacing:-.5px}
+h2{font-size:clamp(19px,4.6vw,25px);line-height:1.25;margin:0 0 10px}
+p{font-size:clamp(16px,4vw,18px);margin:0 0 14px}
+.muted{color:var(--muted)}
+.eyebrow{font-size:12px;letter-spacing:2.2px;text-transform:uppercase;color:var(--gold-dim);font-weight:bold;margin-bottom:8px}
+header{text-align:center;margin-bottom:6px}
+header .ic{font-size:52px;display:block;margin-bottom:6px}
+
+.sub2{font-size:15px;letter-spacing:3px;text-transform:uppercase;color:var(--gold-dim);font-weight:bold;margin:0 0 10px}
+.modes{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:18px 0 6px}
+.mode{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:13px 8px;
+  text-align:center;cursor:pointer;font-weight:bold;font-size:17px;transition:.15s;color:var(--muted)}
+.mode.on{border-color:var(--gold);color:var(--gold);background:var(--card2)}
+.mode small{display:block;font-weight:normal;font-size:12px;color:var(--muted);margin-top:2px}
+
+.bench{background:rgba(0,0,0,.28);border:1px solid var(--line);border-radius:20px;
+  padding:16px 12px;margin:16px 0}
+.slots{display:flex;align-items:stretch;justify-content:center;gap:14px;flex-wrap:wrap}
+.slot{flex:1 1 84px;min-height:66px;border:2px dashed var(--line);border-radius:12px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:6px 4px;transition:.15s;position:relative;background:rgba(255,255,255,.02)}
+.slot .lbl{font-size:10px;letter-spacing:1.6px;text-transform:uppercase;color:var(--muted);opacity:.75}
+.slot.hot{border-color:var(--gold);background:rgba(240,194,78,.12);transform:scale(1.04)}
+.slot.filled{border-style:solid}
+.slot[data-type="prefix"].filled{border-color:var(--pre)}
+.slot[data-type="root"].filled{border-color:var(--root)}
+.slot[data-type="suffix"].filled{border-color:var(--suf)}
+.slot[data-type="g1"].filled,.slot[data-type="g2"].filled{border-color:var(--root)}
+.slot .txt{font-size:clamp(17px,4.6vw,22px);font-weight:bold;letter-spacing:.5px}
+.slot .mn{font-size:11px;color:var(--muted);margin-top:1px;text-align:center;line-height:1.2}
+.plus{align-self:center;font-size:22px;color:var(--muted);flex:0 0 auto}
+
+.rack{margin:18px 0 4px}
+.rack h3{font-size:12px;letter-spacing:2px;text-transform:uppercase;margin:0 0 8px;font-weight:bold}
+.rack.p h3{color:var(--pre)} .rack.r h3{color:var(--root)} .rack.s h3{color:var(--suf)}
+.blocks{display:flex;flex-wrap:wrap;gap:9px}
+.block{border-radius:11px;padding:10px 13px;font-weight:bold;font-size:17px;letter-spacing:.5px;
+  cursor:grab;user-select:none;position:relative;line-height:1.15;
+  border:1px solid rgba(0,0,0,.35);transition:transform .1s,opacity .15s}
+.block small{display:block;font-weight:normal;font-size:11px;opacity:.72;letter-spacing:0}
+.block:active{transform:scale(.95)}
+.block.used{opacity:.32}
+.block.prefix{background:linear-gradient(180deg,#57C48E,#3F9E70);color:#062017}
+.block.root{background:linear-gradient(180deg,#F0C24E,#CF9F2F);color:#241B05}
+.block.suffix{background:linear-gradient(180deg,#6FB6F0,#4A93CE);color:#041A2B}
+.block::after{content:'';position:absolute;right:-7px;top:50%;transform:translateY(-50%);
+  width:14px;height:14px;border-radius:50%;background:inherit;z-index:-1}
+.ghost{position:fixed;z-index:99;pointer-events:none;opacity:.94;
+  box-shadow:0 10px 24px rgba(0,0,0,.5);transform:translate(-50%,-50%) scale(1.06)}
+
+.btn{display:block;width:100%;border:0;cursor:pointer;font-family:inherit;
+  background:linear-gradient(180deg,var(--gold),#D3A238);color:#2A2416;
+  font-size:19px;font-weight:bold;padding:16px 20px;border-radius:16px;
+  box-shadow:0 5px 0 #8A6E2A;margin-top:14px;transition:transform .08s,box-shadow .08s;
+  text-align:center;text-decoration:none}
+.btn:active{transform:translateY(4px);box-shadow:0 1px 0 #8A6E2A}
+.btn:disabled{opacity:.35;box-shadow:0 5px 0 #6A5520;cursor:not-allowed}
+.btn.ghostbtn{background:transparent;color:var(--muted);box-shadow:none;border:1px solid var(--line);
+  font-size:16px;font-weight:normal;padding:12px}
+.btn.ghostbtn:active{transform:none}
+.btn.small{font-size:15px;padding:11px;box-shadow:0 3px 0 #8A6E2A}
+
+.out{border-radius:20px;padding:20px 16px;margin:16px 0;border:2px solid var(--line);
+  background:var(--card);text-align:center;display:none;animation:pop .35s ease}
+@keyframes pop{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:none}}
+.out.real{border-color:var(--green);background:linear-gradient(180deg,#1E3B2E,#16281F)}
+.out.invent{border-color:var(--suf);background:linear-gradient(180deg,#1B3145,#132534)}
+.out .tag{font-size:12px;letter-spacing:2px;text-transform:uppercase;font-weight:bold;margin-bottom:8px}
+.out.real .tag{color:var(--green)} .out.invent .tag{color:var(--suf)}
+.out .word{font-size:clamp(28px,8vw,46px);font-weight:bold;letter-spacing:.5px;line-height:1.1;word-break:break-word;margin-bottom:8px}
+.out .word .p{color:var(--pre)} .out .word .r{color:var(--root)} .out .word .s{color:var(--suf)}
+.out .mean{font-size:clamp(16px,4.2vw,19px);line-height:1.5}
+.out .sub{font-size:14px;color:var(--muted);margin-top:10px;line-height:1.5}
+
+.found{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin:18px 0}
+.found h3{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--gold-dim);margin:0 0 10px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{background:var(--card2);border:1px solid var(--line);border-radius:20px;padding:6px 12px;font-size:15px}
+.chip.inv{border-style:dashed;color:var(--muted)}
+.count{font-size:14px;color:var(--muted);margin-top:10px}
+
+.note{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--gold-dim);
+  border-radius:12px;padding:14px 16px;margin:18px 0;font-size:15px;line-height:1.6;color:var(--muted)}
+.note b{color:var(--cream)}
+.key{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin:10px 0 0;font-size:13px;color:var(--muted)}
+.key span b{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+hr.sep{border:0;border-top:1px solid var(--line);margin:26px 0}
+.tiny{font-size:13px;color:var(--muted);opacity:.7;text-align:center;margin-top:20px}
+
+.topnav{display:flex;gap:8px;justify-content:center;margin:0 0 18px;flex-wrap:wrap}
+.topnav a{font-size:13px;color:var(--muted);text-decoration:none;border:1px solid var(--line);
+  border-radius:20px;padding:7px 14px;background:rgba(0,0,0,.22);transition:.15s;white-space:nowrap}
+.topnav a:active{transform:scale(.96);border-color:var(--gold-dim);color:var(--cream)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="topnav">
+  <a href="index.html">🏠 All lessons</a>
+</div>
+
+
+<header>
+  <span class="ic">🧪</span>
+  <h1>Potions</h1>
+  <p class="sub2">Advanced Word-Making</p>
+  <p class="muted">Three ingredients in the cauldron. Some mixtures are real words. Some aren’t — yet, and those are the interesting ones.</p>
+</header>
+
+<div class="modes">
+  <div class="mode on" id="mLatin" onclick="setMode('latin')">Latin<small>prefix + root + suffix</small></div>
+  <div class="mode" id="mGreek" onclick="setMode('greek')">Greek<small>two pieces joined</small></div>
+</div>
+
+<div class="bench">
+  <div class="slots" id="slots"></div>
+  <div class="key">
+    <span><b style="background:#57C48E"></b>prefix</span>
+    <span><b style="background:#F0C24E"></b>root</span>
+    <span><b style="background:#6FB6F0"></b>suffix</span>
+  </div>
+  <button class="btn" id="forgeBtn" onclick="forge()" disabled>Brew it →</button>
+  <button class="btn ghostbtn small" onclick="clearBench()">Empty the cauldron</button>
+</div>
+
+<div class="out" id="out"></div>
+
+<div id="racks"></div>
+
+<div class="found">
+  <h3>Your potion book</h3>
+  <div class="chips" id="chips"><span class="muted" style="font-size:15px">Nothing brewed yet.</span></div>
+  <div class="count" id="count"></div>
+</div>
+
+<div class="note">
+  <b>For the tutor.</b> A dashed chip is an invented word — that is a <b>success</b>, not a mistake. If Sofia can read a word that has never existed and tell you what it would mean, her morphological processing is working. Ask her: which piece told you that? Could you change the root and keep the meaning?
+</div>
+
+<hr class="sep">
+<p><a href="index.html" class="btn ghostbtn">← Back to all lessons</a></p>
+<p class="tiny">The Spellbook · Potions · Advanced Word-Making</p>
+
+</div>
+
+<script>
+/* ------------------------------------------------ data */
+const PRE=[
+ {k:'re',m:'back, again'},{k:'ex',m:'out'},{k:'im',m:'into'},{k:'in',m:'not'},{k:'con',m:'together'},
+ {k:'pro',m:'forward'},{k:'de',m:'down, away'},{k:'trans',m:'across'},{k:'sub',m:'under'},{k:'pre',m:'before'}
+];
+const ROOT=[
+ {k:'port',m:'carry',v:'carry',g:'carrying',pp:'carried'},
+ {k:'duct',m:'lead',v:'lead',g:'leading',pp:'led'},
+ {k:'spect',m:'look',v:'look',g:'looking',pp:'looked at'},
+ {k:'vis',m:'see',v:'see',g:'seeing',pp:'seen'},
+ {k:'ject',m:'throw',v:'throw',g:'throwing',pp:'thrown'},
+ {k:'mort',m:'death',v:'die',g:'dying',pp:'killed'},
+ {k:'struct',m:'build',v:'build',g:'building',pp:'built'},
+ {k:'script',m:'write',v:'write',g:'writing',pp:'written'},
+ {k:'dict',m:'say',v:'say',g:'saying',pp:'said'},
+ {k:'tract',m:'pull',v:'pull',g:'pulling',pp:'pulled'}
+];
+const SUF=[
+ {k:'er',m:'someone who'},{k:'or',m:'someone who'},{k:'ion',m:'the act of'},
+ {k:'ible',m:'can be'},{k:'able',m:'can be'},{k:'ive',m:'tending to'},
+ {k:'al',m:'to do with'},{k:'ment',m:'the result of'},{k:'ure',m:'the act of'},{k:'ation',m:'the act of'}
+];
+
+/* real Latin words: "prefix|root|suffix", empty string = piece not used */
+const LAT={
+ '|port|able':'Something you can carry.',
+ '|port|er':'Someone whose job is carrying things.',
+ 'trans|port|':'To carry something across.',
+ 'trans|port|able':'Able to be carried across.',
+ 'trans|port|ation':'The whole business of carrying things across.',
+ 'ex|port|':'To carry goods out of a country.',
+ 'ex|port|er':'Someone who carries goods out.',
+ 'im|port|':'To carry goods into a country.',
+ 'im|port|er':'Someone who brings goods in.',
+ 're|port|':'To carry information back to someone.',
+ 're|port|er':'Someone who carries the news back to you.',
+ 'de|port|':'To carry someone away, out of a country.',
+ 'de|port|ation':'The act of carrying someone away.',
+ 'de|port|ment':'The result of how you carry yourself \u2014 how you stand and behave.',
+ 'con|duct|':'To lead things together — like an orchestra.',
+ 'con|duct|or':'Someone who leads it all together.',
+ 'con|duct|ion':'The act of leading something through.',
+ 'con|duct|ive':'Tending to lead heat or electricity through.',
+ 'pro|duct|':'Something led forward, out into the world.',
+ 'pro|duct|ion':'The act of leading something forward.',
+ 'pro|duct|ive':'Tending to lead a lot forward.',
+ 'de|duct|':'To lead away — to take away.',
+ 'de|duct|ion':'The act of taking away.',
+ 'in|duct|ion':'The act of leading someone in.',
+ 're|duct|ion':'The act of leading something back down.',
+ 'in|spect|':'To look into something carefully.',
+ 'in|spect|or':'Someone who looks into things.',
+ 'in|spect|ion':'The act of looking into something.',
+ 're|spect|':'To look back at someone — and think well of them.',
+ 're|spect|able':'Able to be looked at and thought well of.',
+ 're|spect|ive':'Tending to belong to each one separately.',
+ 'pro|spect|':'A look forward — what might be coming.',
+ 'pro|spect|ive':'Tending to be looked forward to.',
+ '|vis|ion':'The act of seeing.',
+ '|vis|ible':'Able to be seen.',
+ '|vis|or':'The thing you see out from under.',
+ 'in|vis|ible':'NOT able to be seen. Harry had a whole cloak of it.',
+ 're|vis|ion':'The act of seeing something again.',
+ 'pro|vis|ion':'Seeing ahead, and getting what you will need.',
+ 're|ject|':'To throw something back.',
+ 're|ject|ion':'The act of throwing back.',
+ 'in|ject|':'To throw something in.',
+ 'in|ject|ion':'The act of throwing something in.',
+ 'pro|ject|':'To throw something forward.',
+ 'pro|ject|or':'The thing that throws a picture forward onto the wall.',
+ 'pro|ject|ion':'The act of throwing forward.',
+ 'de|ject|':'To throw someone down — to make them miserable.',
+ 'sub|ject|':'Thrown under someone else\u2019s power. Also a thing you study.',
+ 'sub|ject|ive':'Tending to come from under your own head, not from facts.',
+ '|mort|al':'To do with death — able to die.',
+ 'im|mort|al':'NOT able to die. Which was the whole plan, wasn\u2019t it.',
+ 'con|struct|':'To build together.',
+ 'con|struct|ion':'The act of building together.',
+ 'con|struct|ive':'Tending to build things up.',
+ 'in|struct|':'To build knowledge into someone.',
+ 'in|struct|or':'Someone who builds knowledge into you.',
+ 'in|struct|ion':'The act of building knowledge in.',
+ 'de|struct|ion':'The act of un-building. Reducto does this.',
+ 'de|struct|ive':'Tending to un-build things.',
+ '|struct|ure':'The act of building — or the thing built.',
+ '|script|ure':'Something written down and kept.',
+ 'de|script|ion':'The act of writing down what something is like.',
+ 'pre|script|ion':'Something written before — orders from the doctor.',
+ 'sub|script|ion':'Your name written underneath. Now it means paying monthly.',
+ 'in|script|ion':'Writing carved into something.',
+ 'pre|dict|':'To say what will happen BEFORE it happens. Trelawney\u2019s whole job.',
+ 'pre|dict|ion':'The act of saying it before it happens.',
+ 'pre|dict|able':'Able to be said before it happens.',
+ '|dict|ion':'The act of saying — how clearly you speak.',
+ 'ex|tract|':'To pull something out.',
+ 'ex|tract|ion':'The act of pulling out.',
+ 'sub|tract|':'To pull from underneath — to take away.',
+ 'sub|tract|ion':'The act of taking away. You do this in maths.',
+ 're|tract|':'To pull something back.',
+ 'pro|tract|':'To pull something forward — to drag it out longer.',
+ 'de|tract|':'To pull away from something good.',
+ '|tract|or':'The thing that pulls.',
+ 'con|ject|ure':'Throwing ideas together — a guess built from what you already know.',
+ 'con|script|':'Someone whose name was written down with everyone else — made to join the army.',
+ 'con|script|ion':'The act of writing names down to make people join up.',
+ 'con|struct|or':'Someone who builds.',
+ 'con|tract|':'Something pulled together — an agreement. It also means to pull smaller.',
+ 'con|tract|ion':'The act of pulling together. <i>Don’t</i> is a contraction of <i>do not</i>.',
+ 'con|tract|or':'Someone who takes on a contract to do a job.',
+ 'de|duct|ible':'Able to be taken away.',
+ 'de|duct|ive':'Tending to take away — working an answer out step by step, like Sherlock Holmes.',
+ 'de|ject|ion':'The act of being thrown down — feeling very low.',
+ 'de|script|ive':'Tending to write down what something is like.',
+ 'de|struct|ible':'Able to be un-built.',
+ 'de|tract|ion':'The act of pulling away from something good.',
+ 'de|tract|or':'Someone who pulls away from what you have done.',
+ 'ex|port|able':'Able to be carried out.',
+ 'ex|port|ation':'The act of carrying goods out of a country.',
+ 'ex|tract|able':'Able to be pulled out.',
+ 'ex|tract|ive':'Tending to pull things out.',
+ 'ex|tract|or':'The thing that pulls something out.',
+ 'im|port|ation':'The act of carrying goods into a country.',
+ 'in|dict|':'To say officially that someone has done something wrong.',
+ 'in|dict|ment':'The result of saying it — the official charge against someone.',
+ 'in|duct|':'To lead someone in.',
+ 'in|duct|ive':'Tending to lead in — working a rule out from lots of examples.',
+ 'in|duct|or':'The thing that leads electricity in.',
+ 'in|ject|able':'Able to be thrown in.',
+ 'in|ject|or':'The thing that throws something in.',
+ 'in|struct|ive':'Tending to build knowledge in — it teaches you something.',
+ 'in|tract|able':'NOT able to be pulled — something that simply will not budge.',
+ '|dict|ation':'The act of saying words out loud for someone else to write down.',
+ '|duct|':'A tube that leads something along.',
+ '|port|':'A place where things are carried in and out by ship.',
+ '|port|al':'To do with carrying — a doorway you are carried through.',
+ '|port|ion':'A part carried off from the whole — your share.',
+ '|script|':'Something written down.',
+ '|tract|able':'Able to be pulled — easy to manage.',
+ '|tract|ion':'The act of pulling — or the grip that lets you pull.',
+ 'pre|dict|ive':'Tending to say things before they happen.',
+ 'pre|dict|or':'Something that says what is coming.',
+ 'pre|script|ive':'Tending to write down beforehand exactly what must be done.',
+ 'pro|port|ion':'How parts are carried forward against each other — their share and size. Maths uses this one.',
+ 'pro|spect|or':'Someone who looks forward — hunting for gold.',
+ 'pro|tract|or':'The thing that pulls a line forward. You measure angles with one.',
+ 're|tract|able':'Able to be pulled back in.',
+ 're|tract|ion':'The act of pulling something back — taking back what you said.',
+ 'sub|script|':'Something written underneath — the little 2 in H₂O.',
+ 'trans|port|er':'Someone, or something, that carries things across.'
+};
+
+const G1=[
+ {k:'tele',m:'far off'},{k:'micro',m:'tiny'},{k:'photo',m:'light'},{k:'auto',m:'self'},{k:'bio',m:'life'},
+ {k:'geo',m:'earth'},{k:'astro',m:'star'},{k:'hydro',m:'water'},{k:'thermo',m:'heat'},{k:'chrono',m:'time'}
+];
+const G2=[
+ {k:'scope',m:'look at',t:'a thing for looking at $'},
+ {k:'graph',m:'write',t:'writing about $'},
+ {k:'phone',m:'sound',t:'$ sound'},
+ {k:'logy',m:'study of',t:'the study of $'},
+ {k:'meter',m:'measure',t:'a thing that measures $'},
+ {k:'naut',m:'sailor',t:'a sailor of the $'},
+ {k:'sphere',m:'ball',t:'a ball of $'},
+ {k:'path',m:'feeling',t:'feeling across $'},
+ {k:'gram',m:'a written thing',t:'something written about $'},
+ {k:'nomy',m:'the rules of',t:'the rules of the $'}
+];
+const GRK={
+ 'tele|scope':'A thing for looking at what is far off. Astronomy needs one.',
+ 'micro|scope':'A thing for looking at what is tiny.',
+ 'tele|phone':'Sound from far off.',
+ 'micro|phone':'Makes a tiny sound big.',
+ 'tele|graph':'Writing sent from far off.',
+ 'tele|gram':'Something written, sent from far off.',
+ 'tele|path':'Someone who feels your thoughts from far off. Legilimency, basically.',
+ 'photo|graph':'Writing made with light. Which is exactly what a camera does.',
+ 'auto|graph':'Writing done by the self. Your own name, in your own hand.',
+ 'bio|logy':'The study of life.',
+ 'geo|logy':'The study of the earth.',
+ 'astro|logy':'The study of the stars — telling fortunes by them.',
+ 'hydro|logy':'The study of water.',
+ 'chrono|logy':'The study of time — the order things happened in.',
+ 'astro|nomy':'The rules of the stars. A Hogwarts subject, taught by Professor Sinistra.',
+ 'auto|nomy':'Making your own rules. Being in charge of yourself.',
+ 'astro|naut':'A sailor of the stars.',
+ 'thermo|meter':'A thing that measures heat.',
+ 'chrono|meter':'A thing that measures time.',
+ 'micro|meter':'A thing that measures tiny distances.',
+ 'hydro|meter':'A thing that measures water.',
+ 'bio|sphere':'The ball of life — everything alive, all together.',
+ 'photo|sphere':'The ball of light around a star.',
+ 'hydro|phone':'A microphone for listening underwater.',
+ 'chrono|graph':'A watch that writes down time — the kind with a stopwatch built in.',
+ 'geo|sphere':'The ball of rock — the solid Earth itself.',
+ 'hydro|sphere':'The ball of water — all the seas, lakes and rivers together.',
+ 'photo|meter':'A thing that measures light.'
+};
+/* near misses — real word is one small change away */
+const NEAR={
+ 'geo|graph':['geography','Earth-writing. Add a Y and you have the school subject.'],
+ 'bio|graph':['biography','Life-writing — the story of someone\u2019s life. Add a Y.'],
+ 'geo|meter':['geometry','Earth-measuring. Add a Y and you have the maths.'],
+ 'photo|logy':['photography','Not quite — but photo + graphy gives you photography.'],
+};
+
+const LATNEAR={
+ '|spect|er':['spectre','Almost — in British English the last two letters swap round: <b>spectre</b>.'],
+ 'con|ject|':['conjecture','Almost — <b>conject</b> died out. Add <b>-ure</b> and you get <b>conjecture</b>.'],
+ 'de|script|':['description','Almost — add <b>-ion</b> for <b>description</b>, or <b>-ive</b> for <b>descriptive</b>.'],
+ 'pre|script|':['prescription','Almost — add <b>-ion</b> and you get <b>prescription</b>.'],
+};
+
+/* ------------------------------------------------ state */
+let mode='latin';
+const bench={prefix:null,root:null,suffix:null,g1:null,g2:null};
+const forged=[];
+
+const SLOTDEF={
+ latin:[{t:'prefix',l:'prefix'},{t:'root',l:'root'},{t:'suffix',l:'suffix'}],
+ greek:[{t:'g1',l:'first piece'},{t:'g2',l:'second piece'}]
+};
+function poolFor(t){return t==='prefix'?PRE:t==='root'?ROOT:t==='suffix'?SUF:t==='g1'?G1:G2;}
+function colourFor(t){return t==='prefix'?'prefix':t==='suffix'?'suffix':'root';}
+function find(t,k){return poolFor(t).find(x=>x.k===k);}
+
+/* ------------------------------------------------ render */
+function renderSlots(){
+  const box=document.getElementById('slots'); box.innerHTML='';
+  const defs=SLOTDEF[mode];
+  defs.forEach((d,i)=>{
+    if(i>0){const p=document.createElement('div');p.className='plus';p.textContent='+';box.appendChild(p);}
+    const s=document.createElement('div');
+    s.className='slot'; s.dataset.type=d.t;
+    const cur=bench[d.t];
+    if(cur){
+      const o=find(d.t,cur);
+      s.classList.add('filled');
+      s.innerHTML='<div class="txt" style="color:var('+(d.t==='prefix'?'--pre':d.t==='suffix'?'--suf':'--root')+')">'+cur+'</div><div class="mn">'+o.m+'</div>';
+      s.onclick=()=>{bench[d.t]=null;refresh();};
+    }else{
+      s.innerHTML='<div class="lbl">'+d.l+'</div>';
+      if(d.t==='prefix'||d.t==='suffix') s.innerHTML+='<div class="mn" style="opacity:.5">optional</div>';
+    }
+    box.appendChild(s);
+  });
+}
+function renderRacks(){
+  const box=document.getElementById('racks'); box.innerHTML='';
+  const defs=mode==='latin'
+    ? [['prefix','Prefixes — go in front','p'],['root','Roots — the heart of the word','r'],['suffix','Suffixes — go on the end','s']]
+    : [['g1','First pieces','r'],['g2','Second pieces','s']];
+  defs.forEach(([t,label,cls])=>{
+    const r=document.createElement('div'); r.className='rack '+cls;
+    r.innerHTML='<h3>'+label+'</h3>';
+    const bl=document.createElement('div'); bl.className='blocks';
+    poolFor(t).forEach(o=>{
+      const b=document.createElement('div');
+      b.className='block '+colourFor(t)+(bench[t]===o.k?' used':'');
+      b.dataset.type=t; b.dataset.k=o.k;
+      b.innerHTML=o.k+'<small>'+o.m+'</small>';
+      attachDrag(b);
+      bl.appendChild(b);
+    });
+    r.appendChild(bl); box.appendChild(r);
+  });
+}
+function refresh(){
+  renderSlots(); renderRacks();
+  const ready = mode==='latin' ? !!bench.root : (!!bench.g1 && !!bench.g2);
+  document.getElementById('forgeBtn').disabled=!ready;
+  document.getElementById('out').style.display='none';
+}
+function clearBench(){Object.keys(bench).forEach(k=>bench[k]=null);refresh();}
+function setMode(m){
+  if(mode===m)return;
+  mode=m; clearBench();
+  document.getElementById('mLatin').classList.toggle('on',m==='latin');
+  document.getElementById('mGreek').classList.toggle('on',m==='greek');
+}
+
+/* ------------------------------------------------ drag + tap */
+function attachDrag(el){
+  let ghost=null,sx=0,sy=0,moved=false;
+  el.addEventListener('pointerdown',e=>{
+    if(el.classList.contains('used'))return;
+    sx=e.clientX; sy=e.clientY; moved=false;
+    el.setPointerCapture(e.pointerId);
+    ghost=el.cloneNode(true);
+    ghost.className='block '+colourFor(el.dataset.type)+' ghost';
+    ghost.style.left=e.clientX+'px'; ghost.style.top=e.clientY+'px';
+    document.body.appendChild(ghost);
+  });
+  el.addEventListener('pointermove',e=>{
+    if(!ghost)return;
+    if(Math.abs(e.clientX-sx)>7||Math.abs(e.clientY-sy)>7)moved=true;
+    ghost.style.left=e.clientX+'px'; ghost.style.top=e.clientY+'px';
+    document.querySelectorAll('.slot').forEach(s=>{
+      const r=s.getBoundingClientRect();
+      const over = e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom;
+      s.classList.toggle('hot', over && s.dataset.type===el.dataset.type);
+    });
+  });
+  const finish=e=>{
+    if(!ghost)return;
+    ghost.remove(); ghost=null;
+    let placed=false;
+    document.querySelectorAll('.slot').forEach(s=>{
+      const r=s.getBoundingClientRect();
+      const over = e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom;
+      if(over && s.dataset.type===el.dataset.type){placed=true;}
+      s.classList.remove('hot');
+    });
+    if(placed || !moved){ bench[el.dataset.type]=el.dataset.k; refresh(); }
+  };
+  el.addEventListener('pointerup',finish);
+  el.addEventListener('pointercancel',()=>{if(ghost){ghost.remove();ghost=null;}
+    document.querySelectorAll('.slot').forEach(s=>s.classList.remove('hot'));});
+}
+
+/* ------------------------------------------------ forge */
+function joinLatin(p,r,s){
+  let w=(p||'')+(r||'')+(s||'');
+  return w;
+}
+function inventLatin(p,r,s){
+  const R=find('root',r);
+  const pm = p ? find('prefix',p).m.split(',')[0] : '';
+  const core = pm ? (R.v+' '+pm) : R.v;
+  const coreG = pm ? (R.g+' '+pm) : R.g;
+  const coreP = pm ? (R.pp+' '+pm) : R.pp;
+  if(!s) return 'to '+core;
+  if(s==='er'||s==='or') return 'someone who '+core+'s';
+  if(s==='ible'||s==='able') return 'able to be '+coreP;
+  if(s==='ive') return 'tending to '+core;
+  if(s==='al') return 'to do with '+coreG;
+  return 'the act of '+coreG;
+}
+function forge(){
+  const out=document.getElementById('out');
+  let word,key,real,meaning,parts,near=null;
+  if(mode==='latin'){
+    const p=bench.prefix||'',r=bench.root,s=bench.suffix||'';
+    key=p+'|'+r+'|'+s; word=joinLatin(p,r,s);
+    real=LAT[key]; near=LATNEAR[key];
+    meaning=real||(near?near[1]:inventLatin(p,r,s));
+    parts=(p?'<span class="p">'+p+'</span>':'')+'<span class="r">'+r+'</span>'+(s?'<span class="s">'+s+'</span>':'');
+  }else{
+    const a=bench.g1,b=bench.g2;
+    key=a+'|'+b; word=a+b;
+    real=GRK[key]; near=NEAR[key];
+    const B=find('g2',b), A=find('g1',a);
+    meaning=real||(near?near[1]:B.t.replace('$',A.m));
+    parts='<span class="r">'+a+'</span><span class="s">'+b+'</span>';
+  }
+  const isReal=!!real;
+  out.className='out '+(isReal?'real':'invent');
+  out.style.display='block';
+  out.innerHTML=
+    '<div class="tag">'+(isReal?'\u2713 A real word':(near?'\u2726 So close':'\u2726 You invented one'))+'</div>'+
+    '<div class="word">'+parts+'</div>'+
+    '<div class="mean">'+meaning+'</div>'+
+    (isReal?'':'<div class="sub">'+(near
+        ? 'The real word is <b style="color:var(--gold)">'+near[0]+'</b>. You were one letter away.'
+        : 'You just made that one up \u2014 but you can still read it, and so could anyone who knows the pieces. That is the whole trick.')+'</div>');
+  record(word,isReal);
+}
+function record(w,isReal){
+  if(forged.some(f=>f.w===w))return;
+  forged.push({w:w,real:isReal});
+  const box=document.getElementById('chips'); box.innerHTML='';
+  forged.forEach(f=>{
+    const c=document.createElement('span');
+    c.className='chip'+(f.real?'':' inv'); c.textContent=f.w;
+    box.appendChild(c);
+  });
+  const r=forged.filter(f=>f.real).length;
+  document.getElementById('count').textContent=
+    r+' real '+(r===1?'word':'words')+' \u00b7 '+(forged.length-r)+' invented';
+}
+
+refresh();
+</script>
+</body>
+</html>
