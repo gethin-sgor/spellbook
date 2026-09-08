@@ -20,7 +20,20 @@ body{
   font-family:"Trebuchet MS",Verdana,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
   min-height:100vh; line-height:1.6; overflow-x:hidden;
 }
-.wrap{max-width:760px;margin:0 auto;padding:22px 18px 120px}
+body::before{
+  content:'';
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+  background-image:url('overlay-dark.png');
+  background-attachment:fixed;
+  opacity:0.2;
+  pointer-events:none;
+  z-index:0;
+}
+.wrap{position:relative;z-index:1;max-width:760px;margin:0 auto;padding:22px 18px 120px}
 .screen{display:none;animation:fade .45s ease}
 .screen.on{display:block}
 @keyframes fade{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
@@ -101,10 +114,44 @@ p{font-size:clamp(17px,4.1vw,19px);margin:0 0 16px}
 .finale .em{font-size:60px;display:block;margin-bottom:12px}
 hr.sep{border:0;border-top:1px solid var(--line);margin:26px 0}
 .tiny{font-size:13px;color:#7E6889;text-align:center;margin-top:24px}
+
+/* --- tutor blocks --- */
+.tutor{background:rgba(0,0,0,.26);border:1px solid var(--line);border-left:4px solid var(--gold-dim);
+  border-radius:14px;padding:15px 16px;margin:20px 0 4px}
+.tutor .th{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gold-dim);
+  font-weight:bold;margin-bottom:8px}
+.tutor p{font-size:15px;line-height:1.6;color:var(--muted);margin:0 0 10px}
+.tutor p:last-child{margin-bottom:0}
+.tutor b{color:var(--cream)}
+.spellwords{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0}
+.spellwords span{background:var(--card2);border:1px solid var(--line);border-radius:9px;
+  padding:6px 11px;font-size:16px;font-weight:bold;color:var(--cream);letter-spacing:.4px}
+details.idea{background:var(--card);border:1px solid var(--line);border-radius:13px;
+  margin-bottom:8px;overflow:hidden}
+details.idea>summary{list-style:none;cursor:pointer;padding:13px 15px;font-size:16px;
+  font-weight:bold;display:flex;align-items:center;gap:10px}
+details.idea>summary::-webkit-details-marker{display:none}
+details.idea>summary::after{content:'+';margin-left:auto;color:var(--gold);font-size:21px;line-height:1}
+details.idea[open]>summary::after{content:'\2212'}
+details.idea[open]>summary{color:var(--gold)}
+details.idea .body{padding:0 15px 14px;font-size:15px;line-height:1.65;color:var(--muted)}
+details.idea .body b{color:var(--cream)}
+details.idea .mins{font-size:12px;color:var(--muted);font-weight:normal;opacity:.75}
+
+.topnav{display:flex;gap:8px;justify-content:center;margin:0 0 18px;flex-wrap:wrap}
+.topnav a{font-size:13px;color:var(--muted);text-decoration:none;border:1px solid var(--line);
+  border-radius:20px;padding:7px 14px;background:rgba(0,0,0,.22);transition:.15s;white-space:nowrap}
+.topnav a:active{transform:scale(.96);border-color:var(--gold-dim);color:var(--cream)}
 </style>
 </head>
 <body>
 <div class="wrap">
+
+<div class="topnav">
+  <a href="index.html">🏠 All lessons</a>
+  <a href="potions.html">🧪 Potions</a>
+</div>
+
 
 <!-- ============ 1. HOOK ============ -->
 <section class="screen on" id="s1">
@@ -226,6 +273,17 @@ hr.sep{border:0;border-top:1px solid var(--line);margin:26px 0}
     <p style="margin:0" id="pickText" class="big"></p>
   </div>
 
+
+  <div class="tutor">
+    <div class="th">Tutor — now do it on paper</div>
+    <p>When the drawing is finished, say these six out loud, one at a time. Sofia writes them
+    <b>on paper</b>, not on the screen.</p>
+    <div class="spellwords"><span>malware</span><span>umbrella</span><span>rebellion</span><span>lupine</span><span>sinister</span><span>malfunction</span></div>
+    <p>Then she checks her own six against this screen <b>before you say anything</b>. Tapping the right
+    answer is recognising a word. Writing it from memory is spelling it, and only the second one is
+    what we are actually after.</p>
+  </div>
+
   <button class="btn" onclick="go(7)">Done →</button>
 </section>
 
@@ -250,9 +308,62 @@ hr.sep{border:0;border-top:1px solid var(--line);margin:26px 0}
     <p style="margin:0" class="big">Ask a grown-up what an umbrella has to do with shadows. They will not know. You do.</p>
   </div>
 
+  
+  <div class="tutor" style="border-left-color:var(--gold)">
+    <div class="th">Tutor — ideas for the rest of the session</div>
+    <p>The lesson above is the input. Pick <b>one or two</b> of these for what's left of the hour —
+    you do not need to do all of them, and you do not need to do the same ones every week.</p>
+  </div>
+
+  <details class="idea"><summary>🧪 Potions <span class="mins">&nbsp;10 min</span></summary>
+    <div class="body">Advanced Word-Making. Drop a prefix, a root and a suffix into the cauldron and see what comes out. Some mixtures
+    are real words; some aren't, and that's the interesting part — if Sofia can read a word that has
+    never existed and tell you what it would mean, the strategy is working.<br><br>
+    <a href="potions.html" class="btn" style="font-size:16px;padding:12px">Go to Potions →</a></div>
+  </details>
+
+  <details class="idea"><summary>🔍 Word espionage <span class="mins">&nbsp;10 min</span></summary>
+    <div class="body">Take a page of whatever Sofia is reading — or better, a page of <b>her own writing</b> —
+    and hunt for the pattern from this lesson. Highlight what you find. Use the standard colours so the
+    three jobs stay visible: <b style="color:#5FD69B">green for prefixes</b>,
+    <b style="color:#F0C24E">yellow for roots</b>, <b style="color:#6FB6F0">blue for suffixes</b>.
+    This is the step that carries the learning out of the session and into her schoolwork.</div>
+  </details>
+
+  <details class="idea"><summary>🧠 Word mastery questions <span class="mins">&nbsp;5 min</span></summary>
+    <div class="body">Pick any word from the lesson and ask:<br>
+    • How many pieces does it have? What are they?<br>
+    • What does each piece do or mean?<br>
+    • Did the root change when the ending went on?<br>
+    • Can you swap the root and keep the ending?<br>
+    • Can you think of another word with this piece in it?<br><br>
+    Sofia should be doing most of the talking. If she gets one wrong, ask the next question rather than
+    correcting her — she will usually get there.</div>
+  </details>
+
+  <details class="idea"><summary>✨ Invent a word <span class="mins">&nbsp;5 min</span></summary>
+    <div class="body">Make up a word that does not exist, using real pieces, and work out together what it
+    <i>would</i> mean. <b>Spectable. Immortion. Subdictive.</b> Then let her invent one for you and see if
+    you can read it.<br><br>
+    This is not a game to fill time — being able to decode a word you have never seen is the
+    entire point of learning the pieces.</div>
+  </details>
+
+  <details class="idea"><summary>🗣️ Teach it back <span class="mins">&nbsp;5 min</span></summary>
+    <div class="body">Sofia explains this lesson's pattern to you as if you have never heard of it. You are
+    allowed to play dumb and ask awkward questions. If she can teach it, she has it — and if she stalls
+    at a particular spot, that is exactly the bit to revisit next session.</div>
+  </details>
+
+  <details class="idea"><summary>📓 The paper workbook <span class="mins">&nbsp;any</span></summary>
+    <div class="body">If she has had enough of the screen, <b>Spellbook-Activities-Sofia.docx</b> has 32
+    activities, one per page, that cover the same eight patterns offline. One page is usually plenty.</div>
+  </details>
+
   <hr class="sep">
   <button class="btn ghost" onclick="restart()">Start again from the beginning</button>
   <p style="margin-top:16px"><a href="index.html" class="btn ghost">← Back to all lessons</a></p>
+  <p style="margin-top:8px"><a href="potions.html" class="btn ghost">🧪 Potions — Advanced Word-Making →</a></p>
   <p class="tiny">The Spellbook · Lesson 3 of 8</p>
 </section>
 
