@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Spellbook — Care of Magical Creatures</title>
+<style>
+:root{
+  --bg:#141A17; --card:#1F2A24; --card2:#28362E; --line:#3A4E42;
+  --gold:#E8B84B; --gold-dim:#A98C3C; --cream:#F2EEE2; --muted:#9DB3A5;
+  --green:#63D69E; --pink:#FF8FB1;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  background:radial-gradient(1100px 760px at 50% -8%, #24352B 0%, var(--bg) 62%);
+  background-attachment:fixed; color:var(--cream);
+  font-family:"Trebuchet MS",Verdana,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  min-height:100vh; line-height:1.6; overflow-x:hidden;
+}
+.wrap{max-width:760px;margin:0 auto;padding:22px 18px 120px}
+.screen{display:none;animation:fade .45s ease}
+.screen.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+h1{font-size:clamp(29px,7.2vw,44px);line-height:1.15;margin:0 0 14px;color:var(--gold);letter-spacing:-.5px}
+h2{font-size:clamp(22px,5.2vw,30px);line-height:1.25;margin:0 0 12px;color:var(--cream)}
+p{font-size:clamp(17px,4.1vw,19px);margin:0 0 16px}
+.muted{color:var(--muted)}
+.eyebrow{font-size:12px;letter-spacing:2.2px;text-transform:uppercase;color:var(--gold-dim);font-weight:bold;margin-bottom:10px}
+.big{font-size:clamp(19px,4.7vw,22px)}
+
+.cloud{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin:24px 0 28px}
+.chip{background:var(--card);border:1px solid var(--line);border-radius:999px;
+  padding:9px 15px;font-size:clamp(14px,3.4vw,16px);color:var(--muted);animation:pop .5s backwards}
+@keyframes pop{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:none}}
+.chip b{color:var(--gold);font-weight:bold;background:rgba(232,184,75,.14);padding:1px 3px;border-radius:4px}
+
+.btn{display:block;width:100%;border:0;cursor:pointer;font-family:inherit;
+  background:linear-gradient(180deg,var(--gold),#D3A238);color:#1B2620;
+  font-size:20px;font-weight:bold;padding:17px 20px;border-radius:16px;
+  box-shadow:0 5px 0 #866C2C;margin-top:10px;transition:transform .08s,box-shadow .08s}
+.btn:active{transform:translateY(4px);box-shadow:0 1px 0 #866C2C}
+.btn.ghost{background:transparent;color:var(--muted);box-shadow:none;border:1px solid var(--line);font-size:16px;font-weight:normal;padding:12px}
+.btn.ghost:active{transform:none}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:20px;margin:14px 0}
+.card.gold{border-color:var(--gold-dim);background:linear-gradient(180deg,#2A3A2F,#1E2A23)}
+
+.wordbox{text-align:center;padding:30px 12px;margin:20px 0}
+.hugeword{font-size:clamp(44px,13vw,80px);font-weight:bold;letter-spacing:2px;line-height:1.05}
+.hugeword .g{color:var(--gold)}
+.hugeword .f{color:var(--muted);opacity:.32}
+.beastface{font-size:clamp(64px,18vw,96px);line-height:1;display:block;margin-bottom:6px}
+
+.beasts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:20px 0}
+.beast{background:var(--card);border:1px solid var(--line);border-radius:18px;
+  padding:18px 12px;text-align:center;cursor:pointer;transition:.18s}
+.beast:active{transform:scale(.96)}
+.beast.opened{border-color:var(--gold-dim);background:linear-gradient(180deg,#2C3D33,#1F2A24)}
+.beast .em{font-size:44px;line-height:1;display:block;margin-bottom:8px}
+.beast .lt{font-size:25px;font-weight:bold;color:var(--gold);letter-spacing:2px}
+.beast .nm{font-size:15px;color:var(--muted);margin-top:4px}
+
+.flips{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:12px;margin:20px 0}
+.flip{background:var(--card);border:1px solid var(--line);border-radius:16px;
+  padding:18px 10px;text-align:center;cursor:pointer;min-height:112px;
+  display:flex;flex-direction:column;justify-content:center;transition:.2s}
+.flip .em{font-size:30px;line-height:1;margin-bottom:6px}
+.flip .w{font-size:21px;font-weight:bold}
+.flip .old{font-size:19px;font-weight:bold;color:var(--gold);display:none;letter-spacing:.5px}
+.flip .hint{font-size:12px;color:var(--muted);margin-top:5px}
+.flip.said{background:linear-gradient(180deg,#31443A,#22302A);border-color:var(--gold-dim)}
+.flip.said .w{display:none}
+.flip.said .old{display:block}
+
+.q{text-align:center;margin:16px 0 6px}
+.q .em{font-size:54px;line-height:1;display:block;margin-bottom:10px}
+.q .gap{font-size:clamp(32px,8.4vw,50px);font-weight:bold;letter-spacing:2px}
+.q .gap .blank{color:var(--gold);border-bottom:4px solid var(--gold-dim);padding:0 6px}
+.q .clue{font-size:16px;color:var(--muted);margin-top:8px;line-height:1.45}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(88px,1fr));gap:10px;margin:20px 0 6px}
+.opt{background:var(--card2);border:1px solid var(--line);border-radius:14px;
+  padding:16px 8px;font-size:24px;font-weight:bold;color:var(--cream);
+  cursor:pointer;font-family:inherit;letter-spacing:2px;transition:.15s}
+.opt:active{transform:scale(.95)}
+.opt.right{background:#2C5C45;border-color:var(--green);color:#DFFFF1}
+.opt.wrong{background:#5C2E3C;border-color:var(--pink);color:#FFE1EA;opacity:.75}
+.fb{min-height:54px;text-align:center;font-size:18px;margin-top:6px}
+.fb .ok{color:var(--green);font-weight:bold}
+.fb .no{color:var(--pink);font-weight:bold}
+.tally{text-align:center;color:var(--muted);font-size:15px;letter-spacing:3px;margin-top:4px}
+
+.dots{display:flex;gap:7px;justify-content:center;margin:0 0 20px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--line)}
+.dot.on{background:var(--gold);transform:scale(1.35)}
+.dot.done{background:var(--gold-dim)}
+
+.picks{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:12px;margin:18px 0}
+.pick{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:16px 6px;text-align:center;cursor:pointer;transition:.15s}
+.pick.sel{border-color:var(--gold);background:linear-gradient(180deg,#31443A,#22302A)}
+.pick .em{font-size:38px;display:block;line-height:1.2}
+.pick .nm{font-size:14px;color:var(--muted);margin-top:4px}
+.pick.sel .nm{color:var(--gold)}
+
+.finale{text-align:center;padding:18px 0}
+.finale .em{font-size:62px;display:block;margin-bottom:12px}
+hr.sep{border:0;border-top:1px solid var(--line);margin:26px 0}
+.tiny{font-size:13px;color:#6E8478;text-align:center;margin-top:24px}
+.fam{font-size:16px;color:var(--muted);line-height:1.75}
+.fam b{color:var(--cream)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ============ HOME ============ -->
+<section class="screen on" id="s0">
+  <div style="text-align:center;padding-top:12px">
+    <div style="font-size:50px;line-height:1">🪄</div>
+    <h1 style="margin-top:8px">The Spellbook</h1>
+    <p class="muted big" style="max-width:540px;margin:0 auto 4px">Creatures, professors, places, spells.</p>
+    <p class="muted" style="max-width:540px;margin:0 auto">Every one of these is hiding a spelling pattern. The gold bits are the patterns. There are eight altogether.</p>
+  </div>
+
+  <div class="cloud" id="cloud"></div>
+
+  <div class="card gold" style="text-align:center">
+    <div class="eyebrow">Care of Magical Creatures · Lesson one</div>
+    <h2 style="margin-bottom:6px">👻 The Silent Letters</h2>
+    <p class="muted" style="margin-bottom:0">Five letters that nobody says out loud.</p>
+  </div>
+  <button class="btn" onclick="go(1)">Start →</button>
+  <p class="tiny">About 20 minutes. Nothing to print. Nothing to get wrong.</p>
+</section>
+
+<!-- ============ 1. HOOK ============ -->
+<section class="screen" id="s1">
+  <div class="dots" data-step="1"></div>
+  <div class="eyebrow">Lesson two</div>
+  <h2>You've seen this before.</h2>
+
+  <div class="wordbox" style="padding:12px 12px">
+    <span class="beastface">🚌</span>
+    <div class="hugeword">KNIGHT BUS</div>
+  </div>
+
+  <p>The purple triple-decker that turns up out of nowhere when a stranded wizard sticks their wand out.</p>
+
+  <div class="card">
+    <p style="margin:0" class="big">Say its name out loud.</p>
+  </div>
+
+  <p class="big">You said <b style="color:var(--gold)">“nite bus”</b>. So where did the <b style="color:var(--gold)">K</b> go?</p>
+  <button class="btn" onclick="go(2)">Where did it go? →</button>
+</section>
+
+<!-- ============ 2. REVEAL ============ -->
+<section class="screen" id="s2">
+  <div class="dots" data-step="2"></div>
+  <div class="eyebrow">The secret</div>
+  <h2>Nowhere. People just stopped saying it.</h2>
+
+  <p>About 700 years ago, everybody pronounced words like that with the k right out loud. <b>Knight</b> sounded roughly like this:</p>
+
+  <div class="wordbox" style="padding:22px 10px">
+    <div class="hugeword"><span class="g">K</span>-N<span class="f">I</span>-<span class="g">CH</span>-T</div>
+  </div>
+
+  <p>Every letter got said. Over hundreds of years people's mouths got lazier and the sounds dropped off — but nobody ever went back and changed the spelling.</p>
+
+  <div class="card gold">
+    <p style="margin:0" class="big">So silent letters aren't a mistake and they aren't there to catch you out. They're a <b style="color:var(--gold)">fossil</b> — the old way of saying it, still stuck on the page.</p>
+  </div>
+
+  <p class="muted">And that's useful. Say the old version in your head while you write, and you'll say every letter you need.</p>
+  <button class="btn" onclick="go(3)">Meet the rest →</button>
+</section>
+
+<!-- ============ 3. THE BEASTS ============ -->
+<section class="screen" id="s3">
+  <div class="dots" data-step="3"></div>
+  <div class="eyebrow">Care of Magical Creatures</div>
+  <h2>Four of them, four silent letters</h2>
+  <p class="muted">Each one guards a pattern — and a whole gang of ordinary words that use it too. Tap them all.</p>
+
+  <div class="beasts" id="beastGrid"></div>
+
+  <div class="card" id="beastInfo" style="display:none">
+    <p style="margin:0 0 10px" id="beastText"></p>
+    <p style="margin:0" class="fam" id="beastFam"></p>
+  </div>
+
+  <div class="card gold" style="margin-top:18px">
+    <div class="eyebrow">And a fifth, with no creature</div>
+    <p style="margin:0 0 8px">⚰️ <b style="color:var(--gold);font-size:22px">mb</b> — Dumbledore’s <b>tomb</b>, by the lake.</p>
+    <p style="margin:0" class="fam">This one hides at the <i>end</i> of a word instead of the front: <b>tomb, limb, thumb, lamb, comb, numb, crumb</b>.</p>
+  </div>
+
+  <button class="btn" onclick="go(4)">Try saying them →</button>
+</section>
+
+<!-- ============ 4. SAY IT THE OLD WAY ============ -->
+<section class="screen" id="s4">
+  <div class="dots" data-step="4"></div>
+  <div class="eyebrow">Out loud, properly</div>
+  <h2>Say them the old way</h2>
+  <p>Tap each one. It'll show you how it used to sound. <b>Say that version out loud.</b> It sounds ridiculous — that's how you know you're doing it right.</p>
+
+  <div class="flips" id="flipGrid"></div>
+  <p class="muted" id="flipCount" style="text-align:center"></p>
+  <button class="btn" onclick="go(5)">Now catch some →</button>
+</section>
+
+<!-- ============ 5. QUIZ ============ -->
+<section class="screen" id="s5">
+  <div class="dots" data-step="5"></div>
+  <div class="eyebrow">Your turn</div>
+  <h2 id="quizTitle">Put the silent letters back</h2>
+  <p class="muted">Each one has lost its silent letters. Tap the pair that belongs.</p>
+
+  <div class="card" style="padding:22px 16px">
+    <div class="q">
+      <span class="em" id="qEm">🦔</span>
+      <div class="gap" id="qWord"></div>
+      <div class="clue" id="qClue"></div>
+    </div>
+    <div class="opts" id="qOpts"></div>
+    <div class="fb" id="qFb"></div>
+    <div class="tally" id="qTally"></div>
+  </div>
+
+  <button class="btn" id="quizNext" style="display:none" onclick="go(6)">Finished →</button>
+</section>
+
+<!-- ============ 6. DRAW ============ -->
+<section class="screen" id="s6">
+  <div class="dots" data-step="6"></div>
+  <div class="eyebrow">Last bit</div>
+  <h2>Which one do you want to draw?</h2>
+  <p class="muted">Pick one. Take your time over it — then write its name somewhere inside the picture.</p>
+
+  <div class="picks" id="pickGrid"></div>
+
+  <div class="card gold" id="pickOut" style="display:none">
+    <p style="margin:0" id="pickText" class="big"></p>
+  </div>
+
+  <button class="btn" onclick="go(7)">Done →</button>
+</section>
+
+<!-- ============ 7. END ============ -->
+<section class="screen" id="s7">
+  <div class="finale">
+    <span class="em">🏆</span>
+    <h1>Lesson one, done.</h1>
+    <p class="big">Four beasts caught, five silent letters, and a reason they're all there.</p>
+  </div>
+
+  <div class="card">
+    <div class="eyebrow">Your creatures</div>
+    <p style="margin:0" class="fam">👻 <b>gh</b> Ghosts &nbsp;·&nbsp; 🚌 <b>kn</b> Knight Bus &nbsp;·&nbsp; 🌀 <b>wr</b> Wrackspurts &nbsp;·&nbsp; 🍄 <b>gn</b> Gnomes &nbsp;·&nbsp; ⚰️ <b>mb</b> the tomb</p>
+  </div>
+
+  <div class="card gold">
+    <div class="eyebrow">Next lesson · Charms</div>
+    <p style="margin:0" class="big">Spells are built out of real Latin — and so is half of English. <b style="color:var(--gold)">Reducto</b> and <b style="color:var(--gold)">aqueduct</b> are made from the same brick.</p>
+  </div>
+
+  <hr class="sep">
+  <button class="btn ghost" onclick="restart()">Start again from the beginning</button>
+  <p style="margin-top:16px"><a href="index.html" class="btn ghost">← Back to all lessons</a></p>
+  <p class="tiny">The Spellbook · Lesson 1 of 8</p>
+</section>
+
+</div>
+
+<script>
+function esc(s){return (s||'').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));}
+
+/* ---------------- home cloud ---------------- */
+const CLOUD=[
+ ["","Kn","arl"],["","Wr","ackspurt"],["","Gh","oul"],["","Gn","ome"],
+ ["Professor Spr","ou","t"],["Professor F","ir","enze"],["Professor B","ur","bage"],
+ ["Professor M","er","rythought"],["","Kn","ockturn Alley"],["The B","ur","row"],
+ ["Fl","ou","rish and Blotts"],["Bertie Bott's ","Ear","wax"],["W","or","mtail"],
+ ["Flobberw","or","m"],["","Er","umpent"],["Aug","ur","ey"],["M","er","people"],
+ ["Divina","tion",""],["Transfigura","tion",""],["H","er","bology"],
+ ["The ","Kn","ight Bus"],["Redu","ct","o"]
+];
+const cloud=document.getElementById('cloud');
+CLOUD.forEach((w,i)=>{
+  const d=document.createElement('div');
+  d.className='chip'; d.style.animationDelay=(i*38)+'ms';
+  d.innerHTML=esc(w[0])+'<b>'+esc(w[1])+'</b>'+esc(w[2]);
+  cloud.appendChild(d);
+});
+
+/* ---------------- the beasts ---------------- */
+const BEASTS=[
+ {em:'👻',lt:'gh',nm:'The Ghosts',
+  info:'Nearly Headless Nick, Moaning Myrtle, the Bloody Baron, the Grey Lady — Hogwarts is absolutely full of them.',
+  fam:'Same pattern: <b>ghost, ghoul, ghastly, aghast</b>'},
+ {em:'🚌',lt:'kn',nm:'The Knight Bus',
+  info:'Also the giant stone knight on the chessboard, and a <b>Knut</b> is the bronze wizarding coin. This letter guards the biggest gang of words in the lesson.',
+  fam:'Same pattern: <b>knight, knife, knot, knuckle, kneel, knack, knowledge</b>'},
+ {em:'🌀',lt:'wr',nm:'Wrackspurts',
+  info:'Luna’s invisible creatures. They float in through your ear and make your brain go all fuzzy. If you cannot concentrate, apparently this is why.',
+  fam:'Same pattern: <b>wrist, wrench, wrinkle, wretched, wring, wrong, wraith</b>'},
+ {em:'🍄',lt:'gn',nm:'The Gnomes',
+  info:'The ones in the garden at the Burrow. You get rid of them by swinging them round your head and letting go, which is called de-gnoming. They bite.',
+  fam:'Same pattern: <b>gnaw, gnarled, gnash, gnat</b>'}
+];
+const bg=document.getElementById('beastGrid');
+BEASTS.forEach(b=>{
+  const d=document.createElement('div');
+  d.className='beast';
+  d.innerHTML='<span class="em">'+b.em+'</span><span class="lt">'+b.lt+'</span><div class="nm">'+b.nm+'</div>';
+  d.onclick=()=>{
+    d.classList.add('opened');
+    document.getElementById('beastInfo').style.display='block';
+    document.getElementById('beastText').innerHTML='<b style="color:var(--gold)">'+b.nm+'</b> \u2014 '+b.info;
+    document.getElementById('beastFam').innerHTML=b.fam;
+  };
+  bg.appendChild(d);
+});
+
+/* ---------------- say it the old way ---------------- */
+const FLIPS=[
+ {em:'🚌',w:'Knight',old:'k-NIGHT'},
+ {em:'🍄',w:'Gnome',old:'ger-NOME'},
+ {em:'🪙',w:'Knut',old:'k-NUT'},
+ {em:'🌀',w:'Wrackspurt',old:'w-RACKSPURT'},
+ {em:'👻',w:'ghastly',old:'g-HAST-ly'},
+ {em:'⚰️',w:'tomb',old:'TOM-buh'},
+ {em:'🔪',w:'knife',old:'k-NIFE'},
+ {em:'👍',w:'thumb',old:'THUM-buh'}
+];
+let flipped=0;
+const fg=document.getElementById('flipGrid');
+FLIPS.forEach(f=>{
+  const d=document.createElement('div');
+  d.className='flip';
+  d.innerHTML='<div class="em">'+f.em+'</div><div class="w">'+f.w+'</div>'+
+              '<div class="old">'+f.old+'</div><div class="hint">tap</div>';
+  d.onclick=()=>{
+    if(d.classList.contains('said'))return;
+    d.classList.add('said');
+    d.querySelector('.hint').textContent='say it out loud!';
+    flipped++;
+    document.getElementById('flipCount').textContent =
+      flipped>=FLIPS.length ? 'All eight. Your mouth is now doing medieval English.' : flipped+' of '+FLIPS.length;
+  };
+  fg.appendChild(d);
+});
+
+/* ---------------- quiz ---------------- */
+const QUIZ=[
+ {em:'🚌',pre:'',ans:'kn',post:'ight Bus',clue:'the purple triple-decker'},
+ {em:'👻',pre:'',ans:'gh',post:'ost',clue:'Nearly Headless Nick is one'},
+ {em:'🍄',pre:'',ans:'gn',post:'ome',clue:'you swing it round and let go'},
+ {em:'🌀',pre:'',ans:'wr',post:'ackspurt',clue:'floats into your ear, makes you fuzzy'},
+ {em:'⚰️',pre:'to',ans:'mb',post:'',clue:'Dumbledore\u2019s, by the lake'},
+ {em:'🪙',pre:'',ans:'kn',post:'ut',clue:'the bronze wizarding coin'},
+ {em:'✍️',pre:'',ans:'wr',post:'ist',clue:'where your wand hand joins your arm'},
+ {em:'🔪',pre:'',ans:'kn',post:'ife',clue:'you cut with it'},
+ {em:'👍',pre:'thu',ans:'mb',post:'',clue:'on your hand'},
+ {em:'🌲',pre:'',ans:'gn',post:'arled',clue:'twisted and knobbly, like the Whomping Willow'}
+];
+const LETTERS=['gh','kn','wr','mb','gn'];
+let qi=0,score=0,locked=false;
+
+function renderQ(){
+  const q=QUIZ[qi]; locked=false;
+  document.getElementById('qEm').textContent=q.em;
+  document.getElementById('qWord').innerHTML=esc(q.pre)+'<span class="blank">? ?</span>'+esc(q.post);
+  document.getElementById('qClue').textContent=q.clue;
+  document.getElementById('qFb').innerHTML='';
+  document.getElementById('qTally').textContent=(qi+1)+' of '+QUIZ.length;
+  const box=document.getElementById('qOpts'); box.innerHTML='';
+  LETTERS.forEach(L=>{
+    const b=document.createElement('button');
+    b.className='opt'; b.textContent=L;
+    b.onclick=()=>answer(b,L,q);
+    box.appendChild(b);
+  });
+}
+function answer(btn,L,q){
+  if(locked)return;
+  if(L===q.ans){
+    locked=true; btn.classList.add('right'); score++;
+    document.getElementById('qWord').innerHTML=esc(q.pre)+'<span class="blank">'+q.ans+'</span>'+esc(q.post);
+    document.getElementById('qFb').innerHTML='<span class="ok">Caught it \u2713</span>';
+    setTimeout(()=>{
+      qi++;
+      if(qi<QUIZ.length){renderQ();}
+      else{
+        document.getElementById('quizTitle').textContent='All caught.';
+        document.getElementById('qEm').textContent='🏅';
+        document.getElementById('qWord').innerHTML='<span style="color:var(--gold)">'+score+' / '+QUIZ.length+'</span>';
+        document.getElementById('qClue').textContent='';
+        document.getElementById('qOpts').innerHTML='';
+        document.getElementById('qFb').innerHTML='<span class="ok">Five silent letters, and not one rule to memorise.</span>';
+        document.getElementById('qTally').textContent='';
+        document.getElementById('quizNext').style.display='block';
+      }
+    },850);
+  }else{
+    btn.classList.add('wrong');
+    document.getElementById('qFb').innerHTML='<span class="no">Not that one \u2014 have another go.</span>';
+  }
+}
+renderQ();
+
+/* ---------------- draw ---------------- */
+const PICKS=[
+ {em:'🚌',nm:'Knight Bus'},{em:'👻',nm:'A Ghost'},{em:'🌀',nm:'Wrackspurt'},
+ {em:'🍄',nm:'Gnome'},{em:'⚰️',nm:'The tomb'},{em:'♞',nm:'The stone Knight'}
+];
+const pg=document.getElementById('pickGrid');
+PICKS.forEach(pk=>{
+  const d=document.createElement('div');
+  d.className='pick';
+  d.innerHTML='<span class="em">'+pk.em+'</span><div class="nm">'+pk.nm+'</div>';
+  d.onclick=()=>{
+    document.querySelectorAll('.pick').forEach(x=>x.classList.remove('sel'));
+    d.classList.add('sel');
+    document.getElementById('pickOut').style.display='block';
+    document.getElementById('pickText').innerHTML=
+      'Draw your <b style="color:var(--gold)">'+pk.nm+'</b>. Write its name inside the picture, and make the silent letters bigger than all the others.';
+  };
+  pg.appendChild(d);
+});
+
+/* ---------------- nav ---------------- */
+const TOTAL=6;
+function go(n){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));
+  document.getElementById('s'+n).classList.add('on');
+  window.scrollTo({top:0,behavior:'instant'});
+}
+document.querySelectorAll('.dots').forEach(d=>{
+  const step=+d.dataset.step;
+  for(let i=1;i<=TOTAL;i++){
+    const x=document.createElement('div');
+    x.className='dot'+(i===step?' on':i<step?' done':'');
+    d.appendChild(x);
+  }
+});
+function restart(){location.reload();}
+</script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Temporary
+*.bak
+~*
+
+# Node (if you add tooling later)
+node_modules/
+package-lock.json

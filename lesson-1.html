@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Spellbook — What Spells Actually Mean</title>
+<style>
+:root{
+  --bg:#0F1428; --card:#1B2340; --card2:#242E52; --line:#37416B;
+  --gold:#F0C24E; --gold-dim:#B08F35; --cream:#F2EFE6; --muted:#A2ABD0;
+  --green:#5FD6A4; --pink:#FF8FB1; --red:#E8636F;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  background:radial-gradient(1100px 780px at 50% -8%, #262F5C 0%, var(--bg) 62%);
+  background-attachment:fixed; color:var(--cream);
+  font-family:"Trebuchet MS",Verdana,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  min-height:100vh; line-height:1.6; overflow-x:hidden;
+}
+.wrap{max-width:760px;margin:0 auto;padding:22px 18px 120px}
+.screen{display:none;animation:fade .45s ease}
+.screen.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+h1{font-size:clamp(29px,7.2vw,44px);line-height:1.15;margin:0 0 14px;color:var(--gold);letter-spacing:-.5px}
+h2{font-size:clamp(22px,5.2vw,30px);line-height:1.25;margin:0 0 12px;color:var(--cream)}
+p{font-size:clamp(17px,4.1vw,19px);margin:0 0 16px}
+.muted{color:var(--muted)}
+.eyebrow{font-size:12px;letter-spacing:2.2px;text-transform:uppercase;color:var(--gold-dim);font-weight:bold;margin-bottom:10px}
+.big{font-size:clamp(19px,4.7vw,22px)}
+
+.cloud{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin:24px 0 28px}
+.chip{background:var(--card);border:1px solid var(--line);border-radius:999px;
+  padding:9px 15px;font-size:clamp(14px,3.4vw,16px);color:var(--muted);animation:pop .5s backwards}
+@keyframes pop{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:none}}
+.chip b{color:var(--gold);font-weight:bold;background:rgba(240,194,78,.15);padding:1px 3px;border-radius:4px}
+
+.btn{display:block;width:100%;border:0;cursor:pointer;font-family:inherit;
+  background:linear-gradient(180deg,var(--gold),#D3A238);color:#161C36;
+  font-size:20px;font-weight:bold;padding:17px 20px;border-radius:16px;
+  box-shadow:0 5px 0 #8A6E2A;margin-top:10px;transition:transform .08s,box-shadow .08s}
+.btn:active{transform:translateY(4px);box-shadow:0 1px 0 #8A6E2A}
+.btn.ghost{background:transparent;color:var(--muted);box-shadow:none;border:1px solid var(--line);font-size:16px;font-weight:normal;padding:12px}
+.btn.ghost:active{transform:none}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:20px;margin:14px 0}
+.card.gold{border-color:var(--gold-dim);background:linear-gradient(180deg,#26305A,#1A2240)}
+.card.dark{background:linear-gradient(180deg,#241A2E,#160F1E);border-color:#4A2B4E}
+
+.wordbox{text-align:center;padding:26px 12px;margin:18px 0}
+.hugeword{font-size:clamp(38px,10.5vw,68px);font-weight:bold;letter-spacing:1px;line-height:1.05}
+.hugeword .g{color:var(--gold);background:rgba(240,194,78,.14);border-radius:8px;padding:0 6px}
+.hugeword .f{opacity:.4}
+.icon{font-size:clamp(56px,15vw,84px);line-height:1;display:block;margin-bottom:10px}
+
+.eq{text-align:center;font-size:clamp(20px,5vw,26px);font-weight:bold;line-height:1.9;margin:6px 0}
+.eq .a{color:var(--gold)}
+.eq .b{color:var(--muted);font-weight:normal;font-size:.85em}
+
+.bricks{display:grid;grid-template-columns:repeat(auto-fit,minmax(152px,1fr));gap:12px;margin:20px 0}
+.brick{background:var(--card);border:1px solid var(--line);border-radius:18px;
+  padding:16px 12px;text-align:center;cursor:pointer;transition:.18s}
+.brick:active{transform:scale(.96)}
+.brick.opened{border-color:var(--gold-dim);background:linear-gradient(180deg,#2A3460,#1D2544)}
+.brick .em{font-size:38px;line-height:1;display:block;margin-bottom:7px}
+.brick .sp{font-size:15px;color:var(--muted);font-style:italic}
+.brick .lt{font-size:25px;font-weight:bold;color:var(--gold);letter-spacing:1px;margin-top:3px}
+.brick .mn{font-size:14px;color:var(--muted);margin-top:2px}
+
+.fam{font-size:16px;color:var(--muted);line-height:1.85}
+.fam b{color:var(--cream)}
+
+.q{text-align:center;margin:16px 0 6px}
+.q .em{font-size:48px;line-height:1;display:block;margin-bottom:8px}
+.q .gap{font-size:clamp(30px,7.8vw,46px);font-weight:bold;letter-spacing:1px}
+.q .gap .blank{color:var(--gold);background:rgba(240,194,78,.16);border-radius:8px;padding:0 8px}
+.q .clue{font-size:16px;color:var(--muted);margin-top:8px;line-height:1.45}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(92px,1fr));gap:10px;margin:20px 0 6px}
+.opt{background:var(--card2);border:1px solid var(--line);border-radius:14px;
+  padding:14px 6px;font-size:20px;font-weight:bold;color:var(--cream);
+  cursor:pointer;font-family:inherit;letter-spacing:1px;transition:.15s;line-height:1.3}
+.opt small{display:block;font-size:12px;font-weight:normal;color:var(--muted);letter-spacing:0}
+.opt:active{transform:scale(.95)}
+.opt.right{background:#22624A;border-color:var(--green);color:#DFFFF1}
+.opt.right small{color:#BFF3DE}
+.opt.wrong{background:#5A2634;border-color:var(--pink);color:#FFE1EA;opacity:.75}
+.fb{min-height:54px;text-align:center;font-size:18px;margin-top:6px}
+.fb .ok{color:var(--green);font-weight:bold}
+.fb .no{color:var(--pink);font-weight:bold}
+.tally{text-align:center;color:var(--muted);font-size:15px;letter-spacing:3px;margin-top:4px}
+
+.dots{display:flex;gap:7px;justify-content:center;margin:0 0 20px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--line)}
+.dot.on{background:var(--gold);transform:scale(1.35)}
+.dot.done{background:var(--gold-dim)}
+
+.picks{display:grid;grid-template-columns:repeat(auto-fit,minmax(104px,1fr));gap:12px;margin:18px 0}
+.pick{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:16px 6px;text-align:center;cursor:pointer;transition:.15s}
+.pick.sel{border-color:var(--gold);background:linear-gradient(180deg,#2C3766,#1D2544)}
+.pick .em{font-size:36px;display:block;line-height:1.2}
+.pick .nm{font-size:14px;color:var(--muted);margin-top:4px}
+.pick.sel .nm{color:var(--gold)}
+
+.finale{text-align:center;padding:18px 0}
+.finale .em{font-size:60px;display:block;margin-bottom:12px}
+hr.sep{border:0;border-top:1px solid var(--line);margin:26px 0}
+.tiny{font-size:13px;color:#6E779C;text-align:center;margin-top:24px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ============ HOME ============ -->
+<section class="screen on" id="s0">
+  <div style="text-align:center;padding-top:12px">
+    <div style="font-size:50px;line-height:1">⚡</div>
+    <h1 style="margin-top:8px">The Spellbook</h1>
+    <p class="muted big" style="max-width:540px;margin:0 auto 4px">Spells, names, places, creatures.</p>
+    <p class="muted" style="max-width:540px;margin:0 auto">Every one of these is hiding a spelling pattern. The gold bits are the patterns. There are eight altogether.</p>
+  </div>
+
+  <div class="cloud" id="cloud"></div>
+
+  <div class="card gold" style="text-align:center">
+    <div class="eyebrow">Lesson one</div>
+    <h2 style="margin-bottom:6px">🪄 What spells actually mean</h2>
+    <p class="muted" style="margin-bottom:0">Starting with the name everyone's afraid of.</p>
+  </div>
+  <button class="btn" onclick="go(1)">Start →</button>
+  <p class="tiny">About 20 minutes. Nothing to print. Nothing to get wrong.</p>
+</section>
+
+<!-- ============ 1. HOOK ============ -->
+<section class="screen" id="s1">
+  <div class="dots" data-step="1"></div>
+  <div class="eyebrow">Lesson one</div>
+  <h2>Say his name.</h2>
+
+  <div class="wordbox" style="padding:10px 12px">
+    <span class="icon">🐍</span>
+    <div class="hugeword">VOLDEMORT</div>
+  </div>
+
+  <p class="big">There's a real word hiding in there. Nobody made it up — it's Latin, and it's been around for about two thousand years.</p>
+
+  <div class="card dark" style="text-align:center">
+    <div class="hugeword" style="font-size:clamp(30px,8vw,52px)">VOLDE<span class="g">MORT</span></div>
+  </div>
+
+  <button class="btn" onclick="go(2)">What does MORT mean? →</button>
+</section>
+
+<!-- ============ 2. REVEAL ============ -->
+<section class="screen" id="s2">
+  <div class="dots" data-step="2"></div>
+  <div class="eyebrow">The secret</div>
+
+  <div class="wordbox" style="padding:12px 10px;margin-top:0">
+    <span class="icon">💀</span>
+    <div class="hugeword"><span class="g">MORT</span></div>
+    <p class="big" style="margin-top:14px">= <b style="color:var(--gold)">death</b></p>
+  </div>
+
+  <p>Which is a good name for him. But here's the bit that matters for you — once you know that brick, you get all of these for free:</p>
+
+  <div class="card">
+    <div class="eq"><span class="a">mortal</span> <span class="b">= can die</span></div>
+    <div class="eq"><span class="a">immortal</span> <span class="b">= <i>not</i> death</span></div>
+    <div class="eq"><span class="a">mortuary</span> <span class="b">= where the bodies go</span></div>
+  </div>
+
+  <div class="card gold">
+    <p style="margin:0" class="big">Immortal literally means <b style="color:var(--gold)">not death</b>. That is the exact thing he spends seven books trying to become — and it was written inside his name the whole time.</p>
+  </div>
+
+  <p class="muted">You never have to remember how to spell those three words separately. They're all just <b style="color:var(--gold)">mort</b> with something stuck on.</p>
+  <button class="btn" onclick="go(3)">Show me more spells →</button>
+</section>
+
+<!-- ============ 3. THE BRICKS ============ -->
+<section class="screen" id="s3">
+  <div class="dots" data-step="3"></div>
+  <div class="eyebrow">Every spell is made of these</div>
+  <h2>Five more bricks</h2>
+  <p class="muted">Tap each spell to find the word hiding inside it — and the English words built from the same brick.</p>
+
+  <div class="bricks" id="brickGrid"></div>
+
+  <div class="card" id="brickInfo" style="display:none">
+    <p style="margin:0 0 10px" id="brickText"></p>
+    <p style="margin:0" class="fam" id="brickFam"></p>
+  </div>
+
+  <button class="btn" onclick="go(4)">One more thing →</button>
+</section>
+
+<!-- ============ 4. THE UCT PAYOFF ============ -->
+<section class="screen" id="s4">
+  <div class="dots" data-step="4"></div>
+  <div class="eyebrow">Worth knowing</div>
+  <h2>This is why some words never made sense</h2>
+
+  <p>Look at these. They all end the same way and it never seems to follow any rule:</p>
+
+  <div class="card" style="text-align:center">
+    <div class="eq"><span class="a">condu<span style="color:var(--gold)">ct</span> &nbsp; produ<span style="color:var(--gold)">ct</span> &nbsp; instru<span style="color:var(--gold)">ct</span></span></div>
+    <div class="eq"><span class="a">constru<span style="color:var(--gold)">ct</span> &nbsp; aquedu<span style="color:var(--gold)">ct</span></span></div>
+  </div>
+
+  <p class="big">That's because <b style="color:var(--gold)">"uct" was never a sound.</b> It's not a spelling pattern and it never was one.</p>
+
+  <div class="card gold">
+    <p style="margin:0" class="big">It's <b style="color:var(--gold)">duct</b> — the same brick as in <b>Reducto</b>. It means <b style="color:var(--gold)">to lead</b>.</p>
+  </div>
+
+  <p class="muted">An aqueduct leads water. A conductor leads an orchestra. You don't sound those words out — you build them.</p>
+  <button class="btn" onclick="go(5)">Test me →</button>
+</section>
+
+<!-- ============ 5. QUIZ ============ -->
+<section class="screen" id="s5">
+  <div class="dots" data-step="5"></div>
+  <div class="eyebrow">Your turn</div>
+  <h2 id="quizTitle">Find the brick</h2>
+  <p class="muted">Which brick is hiding inside each word?</p>
+
+  <div class="card" style="padding:22px 16px">
+    <div class="q">
+      <span class="em" id="qEm">🔮</span>
+      <div class="gap" id="qWord"></div>
+      <div class="clue" id="qClue"></div>
+    </div>
+    <div class="opts" id="qOpts"></div>
+    <div class="fb" id="qFb"></div>
+    <div class="tally" id="qTally"></div>
+  </div>
+
+  <button class="btn" id="quizNext" style="display:none" onclick="go(6)">Finished →</button>
+</section>
+
+<!-- ============ 6. DRAW ============ -->
+<section class="screen" id="s6">
+  <div class="dots" data-step="6"></div>
+  <div class="eyebrow">Last bit</div>
+  <h2>Which spell do you want to draw?</h2>
+  <p class="muted">Pick one. Draw the spell going off — then write its brick and what it means somewhere in the picture.</p>
+
+  <div class="picks" id="pickGrid"></div>
+
+  <div class="card gold" id="pickOut" style="display:none">
+    <p style="margin:0" id="pickText" class="big"></p>
+  </div>
+
+  <button class="btn" onclick="go(7)">Done →</button>
+</section>
+
+<!-- ============ 7. END ============ -->
+<section class="screen" id="s7">
+  <div class="finale">
+    <span class="em">🏆</span>
+    <h1>Lesson one, done.</h1>
+    <p class="big">Six bricks. Between them they build several hundred English words — and you didn't sound out a single one.</p>
+  </div>
+
+  <div class="card">
+    <div class="eyebrow">Your bricks</div>
+    <p style="margin:0" class="fam">
+      💀 <b>mort</b> death &nbsp;·&nbsp; 💡 <b>lum</b> light &nbsp;·&nbsp; 🪶 <b>lev</b> lift<br>
+      👁️ <b>spect</b> see &nbsp;·&nbsp; 🔑 <b>port</b> carry &nbsp;·&nbsp; 💥 <b>duct</b> lead
+    </p>
+  </div>
+
+  <div class="card gold">
+    <div class="eyebrow">Next lesson · Care of Magical Creatures</div>
+    <p style="margin:0" class="big">👻 The Ghoul in the Weasleys' attic, 🍄 the garden Gnomes and 🌀 Wrackspurts are all guarding letters that nobody says out loud.</p>
+  </div>
+
+  <hr class="sep">
+  <button class="btn ghost" onclick="restart()">Start again from the beginning</button>
+  <p style="margin-top:16px"><a href="index.html" class="btn ghost">← Back to all lessons</a></p>
+  <p class="tiny">The Spellbook · Lesson 1 of 8</p>
+</section>
+
+</div>
+
+<script>
+function esc(s){return (s||'').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));}
+
+/* ---------------- home cloud ---------------- */
+const CLOUD=[
+ ["Voldem","or","t"],["Gryffind","or",""],["H","or","crux"],["Dumbled","or","e"],
+ ["H","er","mione"],["Dement","or",""],["F","ir","ebolt"],["The S","or","ting Hat"],
+ ["","Port","key"],["","Lum","os"],["Wingardium ","Lev","iosa"],["Ex","pect","o Patronum"],
+ ["Redu","ct","o"],["Po","tion","s"],["Transfigura","tion",""],["Divina","tion",""],
+ ["W","er","ewolf"],["The B","ur","row"],["","Kn","ockturn Alley"],["","Gh","oul"],
+ ["Professor Spr","ou","t"],["Fl","ou","rish and Blotts"],["W","or","mtail"],["Th","ir","d Floor"]
+];
+const cloud=document.getElementById('cloud');
+CLOUD.forEach((w,i)=>{
+  const d=document.createElement('div');
+  d.className='chip'; d.style.animationDelay=(i*36)+'ms';
+  d.innerHTML=esc(w[0])+'<b>'+esc(w[1])+'</b>'+esc(w[2]);
+  cloud.appendChild(d);
+});
+
+/* ---------------- the bricks ---------------- */
+const BRICKS=[
+ {em:'💡',sp:'Lumos',lt:'lum',mn:'light',
+  info:'The wand-lighting one. <b style="color:var(--gold)">Lum</b> means light \u2014 which is why it does what it does.',
+  fam:'Built from it: <b>luminous, illuminate, illumination, luminary</b>'},
+ {em:'🪶',sp:'Wingardium Leviosa',lt:'lev',mn:'lift',
+  info:'The feather one. <b style="color:var(--gold)">Lev</b> means light in weight, or to lift.',
+  fam:'Built from it: <b>levitate, elevate, elevator, lever</b> \u2014 a lift really is a lift.'},
+ {em:'👁️',sp:'Expecto Patronum',lt:'spect',mn:'to see',
+  info:'<b style="color:var(--gold)">Spect</b> means to see or to watch. Spectacles are literally the things you see through.',
+  fam:'Built from it: <b>inspect, spectator, spectacles, respect, spectre, prospect</b>'},
+ {em:'🔑',sp:'Portkey',lt:'port',mn:'to carry',
+  info:'A Portkey <i>carries</i> you somewhere. <b style="color:var(--gold)">Port</b> means to carry.',
+  fam:'Built from it: <b>portable, transport, import, export, portal, porter</b>'},
+ {em:'💥',sp:'Reducto',lt:'duct',mn:'to lead',
+  info:'<b style="color:var(--gold)">Duct</b> means to lead or to pull. This one is about to solve a problem you have had for years.',
+  fam:'Built from it: <b>conduct, product, instruct, construct, deduct, aqueduct, introduce</b>'},
+ {em:'💧',sp:'Aguamenti',lt:'aqua',mn:'water',
+  info:'The water one. And here is a nice trick \u2014 an <b>aqueduct</b> is two bricks stuck together: aqua + duct. Water, led.',
+  fam:'Built from it: <b>aquarium, aquatic, aqueduct, aqualung</b>'}
+];
+const bg=document.getElementById('brickGrid');
+BRICKS.forEach(b=>{
+  const d=document.createElement('div');
+  d.className='brick';
+  d.innerHTML='<span class="em">'+b.em+'</span><div class="sp">'+b.sp+'</div>'+
+              '<div class="lt">'+b.lt+'</div><div class="mn">'+b.mn+'</div>';
+  d.onclick=()=>{
+    d.classList.add('opened');
+    document.getElementById('brickInfo').style.display='block';
+    document.getElementById('brickText').innerHTML=b.info;
+    document.getElementById('brickFam').innerHTML=b.fam;
+  };
+  bg.appendChild(d);
+});
+
+/* ---------------- quiz ---------------- */
+const OPTS=[
+ {k:'mort',m:'death'},{k:'lum',m:'light'},{k:'lev',m:'lift'},
+ {k:'spect',m:'see'},{k:'port',m:'carry'},{k:'duct',m:'lead'}
+];
+const QUIZ=[
+ {em:'🚚',w:'transport',ans:'port',clue:'carrying something across'},
+ {em:'💀',w:'immortal',ans:'mort',clue:'cannot die'},
+ {em:'🔦',w:'illuminate',ans:'lum',clue:'to light something up'},
+ {em:'🏟️',w:'spectator',ans:'spect',clue:'someone watching'},
+ {em:'🛗',w:'elevator',ans:'lev',clue:'lifts you up a building'},
+ {em:'🎻',w:'conductor',ans:'duct',clue:'leads the orchestra'},
+ {em:'🎒',w:'portable',ans:'port',clue:'you can carry it'},
+ {em:'👓',w:'spectacles',ans:'spect',clue:'you see through them'},
+ {em:'🌉',w:'aqueduct',ans:'duct',clue:'leads water across a valley'},
+ {em:'✨',w:'luminous',ans:'lum',clue:'glowing in the dark'}
+];
+let qi=0,score=0,locked=false;
+
+function renderQ(){
+  const q=QUIZ[qi]; locked=false;
+  document.getElementById('qEm').textContent=q.em;
+  document.getElementById('qWord').textContent=q.w;
+  document.getElementById('qClue').textContent=q.clue;
+  document.getElementById('qFb').innerHTML='';
+  document.getElementById('qTally').textContent=(qi+1)+' of '+QUIZ.length;
+  const box=document.getElementById('qOpts'); box.innerHTML='';
+  OPTS.forEach(o=>{
+    const b=document.createElement('button');
+    b.className='opt';
+    b.innerHTML=o.k+'<small>'+o.m+'</small>';
+    b.onclick=()=>answer(b,o.k,q);
+    box.appendChild(b);
+  });
+}
+function answer(btn,k,q){
+  if(locked)return;
+  if(k===q.ans){
+    locked=true; btn.classList.add('right'); score++;
+    const i=q.w.indexOf(q.ans);
+    document.getElementById('qWord').innerHTML =
+      i<0 ? esc(q.w)
+          : esc(q.w.slice(0,i))+'<span class="blank">'+esc(q.ans)+'</span>'+esc(q.w.slice(i+q.ans.length));
+    document.getElementById('qFb').innerHTML='<span class="ok">Found it \u2713</span>';
+    setTimeout(()=>{
+      qi++;
+      if(qi<QUIZ.length){renderQ();}
+      else{
+        document.getElementById('quizTitle').textContent='All found.';
+        document.getElementById('qEm').textContent='🏅';
+        document.getElementById('qWord').innerHTML='<span style="color:var(--gold)">'+score+' / '+QUIZ.length+'</span>';
+        document.getElementById('qClue').textContent='';
+        document.getElementById('qOpts').innerHTML='';
+        document.getElementById('qFb').innerHTML='<span class="ok">Six bricks. Hundreds of words. No sounding out.</span>';
+        document.getElementById('qTally').textContent='';
+        document.getElementById('quizNext').style.display='block';
+      }
+    },900);
+  }else{
+    btn.classList.add('wrong');
+    document.getElementById('qFb').innerHTML='<span class="no">Not that one \u2014 have another go.</span>';
+  }
+}
+renderQ();
+
+/* ---------------- draw ---------------- */
+const PICKS=[
+ {em:'💡',nm:'Lumos',b:'lum \u2014 light'},
+ {em:'🪶',nm:'Leviosa',b:'lev \u2014 lift'},
+ {em:'🦌',nm:'Expecto Patronum',b:'spect \u2014 see'},
+ {em:'🔑',nm:'Portkey',b:'port \u2014 carry'},
+ {em:'💥',nm:'Reducto',b:'duct \u2014 lead'},
+ {em:'💧',nm:'Aguamenti',b:'aqua \u2014 water'}
+];
+const pg=document.getElementById('pickGrid');
+PICKS.forEach(pk=>{
+  const d=document.createElement('div');
+  d.className='pick';
+  d.innerHTML='<span class="em">'+pk.em+'</span><div class="nm">'+pk.nm+'</div>';
+  d.onclick=()=>{
+    document.querySelectorAll('.pick').forEach(x=>x.classList.remove('sel'));
+    d.classList.add('sel');
+    document.getElementById('pickOut').style.display='block';
+    document.getElementById('pickText').innerHTML=
+      'Draw <b style="color:var(--gold)">'+pk.nm+'</b> going off. Write <b style="color:var(--gold)">'+pk.b+
+      '</b> inside the picture, and make the brick bigger than everything else.';
+  };
+  pg.appendChild(d);
+});
+
+/* ---------------- nav ---------------- */
+const TOTAL=6;
+function go(n){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));
+  document.getElementById('s'+n).classList.add('on');
+  window.scrollTo({top:0,behavior:'instant'});
+}
+document.querySelectorAll('.dots').forEach(d=>{
+  const step=+d.dataset.step;
+  for(let i=1;i<=TOTAL;i++){
+    const x=document.createElement('div');
+    x.className='dot'+(i===step?' on':i<step?' done':'');
+    d.appendChild(x);
+  }
+});
+function restart(){location.reload();}
+</script>
+</body>
+</html>

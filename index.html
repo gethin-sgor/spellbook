@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Spellbook — Sofia's Spelling Programme</title>
+<style>
+:root{
+  --bg:#0F0B15; --card:#1A1220; --card2:#24192D; --line:#3A2E45;
+  --gold:#F0C24E; --gold-dim:#B08F35; --cream:#F5F1EC; --muted:#B8A5C6;
+  --accent:#9B7FBA;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  background:radial-gradient(1100px 800px at 50% -8%, #2C1F42 0%, var(--bg) 64%);
+  background-attachment:fixed; color:var(--cream);
+  font-family:"Trebuchet MS",Verdana,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  min-height:100vh; overflow-x:hidden;
+}
+.wrap{max-width:900px;margin:0 auto;padding:40px 20px 100px}
+
+header{text-align:center;margin-bottom:60px;padding-top:20px}
+header h1{font-size:clamp(32px,8vw,56px);line-height:1.1;margin:0 0 8px;color:var(--gold);letter-spacing:-1px}
+header .icon{font-size:clamp(48px,12vw,72px);display:block;margin-bottom:16px}
+header p{color:var(--muted);font-size:clamp(17px,4.5vw,20px);margin:0 0 4px;max-width:600px;margin-left:auto;margin-right:auto}
+header .sub{color:var(--muted);font-size:15px;opacity:.85;margin:0}
+
+.intro{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:28px 24px;
+  margin:0 0 48px;text-align:center;max-width:700px;margin-left:auto;margin-right:auto}
+.intro p{margin:0;font-size:18px;line-height:1.7;color:var(--muted)}
+.intro strong{color:var(--cream)}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;margin-bottom:40px}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;
+  padding:24px;text-align:center;cursor:pointer;transition:.2s;text-decoration:none;display:flex;flex-direction:column}
+.card:hover:not(.locked){transform:translateY(-4px);border-color:var(--gold);box-shadow:0 12px 28px rgba(240,194,78,.12)}
+.card:active:not(.locked){transform:translateY(-1px)}
+
+.card .num{font-size:13px;letter-spacing:3px;text-transform:uppercase;color:var(--gold-dim);font-weight:bold;margin-bottom:8px}
+.card .icon{font-size:44px;line-height:1;display:block;margin:12px 0}
+.card h3{font-size:clamp(19px,5vw,24px);margin:0 0 6px;color:var(--cream);font-weight:bold}
+.card .desc{font-size:15px;color:var(--muted);margin:0 0 16px;line-height:1.6;flex:1}
+.card .status{font-size:14px;color:var(--muted);margin-top:auto}
+
+.card.locked{opacity:.55}
+.card.locked .icon{opacity:.4}
+.card.locked h3{opacity:.6}
+.card.locked .desc{display:none}
+.card.locked .status{color:var(--accent);font-style:italic}
+
+.card.active{border-color:var(--gold-dim);background:linear-gradient(180deg,#2A1F35,#1A1220)}
+.card.active .num{color:var(--gold)}
+
+.btn{display:inline-block;background:linear-gradient(180deg,var(--gold),#D3A238);color:#1A0F1F;
+  font-size:16px;font-weight:bold;padding:12px 24px;border-radius:12px;
+  border:0;cursor:pointer;transition:.1s;box-shadow:0 4px 0 #8A6E2A;
+  font-family:inherit;text-decoration:none}
+.btn:active{transform:translateY(2px);box-shadow:0 2px 0 #8A6E2A}
+.card.locked .btn{opacity:.4;pointer-events:none}
+
+.section-title{font-size:clamp(18px,5vw,22px);font-weight:bold;color:var(--cream);
+  margin:48px 0 24px;padding-bottom:12px;border-bottom:2px solid var(--line)}
+
+.files{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;margin:24px 0}
+.files h4{margin:0 0 14px;color:var(--gold);font-size:16px}
+.file-list{list-style:none;padding:0;margin:0}
+.file-list li{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);font-size:15px}
+.file-list li:last-child{border-bottom:0}
+.file-list a{color:var(--gold);text-decoration:none;font-weight:bold}
+.file-list a:hover{text-decoration:underline}
+.file-icon{font-size:18px;flex:0 0 auto}
+
+footer{text-align:center;margin-top:60px;padding-top:40px;border-top:1px solid var(--line)}}
+footer p{color:var(--muted);font-size:14px;margin:0 0 8px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <span class="icon">🪄</span>
+  <h1>The Spellbook</h1>
+  <p>Sofia's spelling programme, built on Harry Potter</p>
+  <p class="sub">8 lessons × Latin roots, sounds, patterns, and names</p>
+</header>
+
+<div class="intro">
+  <p>Every spell has a pattern inside it. Every name has a meaning. This is not sounding-out — it is building. <strong>Tap a lesson to start.</strong></p>
+</div>
+
+<div class="grid" id="lessonGrid"></div>
+
+<div class="section-title">📖 Reference materials</div>
+<div class="files">
+  <h4>For teachers, tutors, or ALNCo</h4>
+  <ul class="file-list">
+    <li><span class="file-icon">📋</span> <a href="Spelling-Programme-Sofia.docx">Spelling-Programme-Sofia.docx</a> — Full programme overview, scope & sequence, session notes, tracking table</li>
+    <li><span class="file-icon">📓</span> <a href="Spellbook-Activities-Sofia.docx">Spellbook-Activities-Sofia.docx</a> — 44 pages of offline activities (1 per page), ready to print</li>
+  </ul>
+</div>
+
+<div class="files">
+  <h4>For Sofia</h4>
+  <ul class="file-list">
+    <li><span class="file-icon">📕</span> <a href="The-Spellbook-Sofia.docx">The-Spellbook-Sofia.docx</a> — Child-facing workbook, 23 pages, pitched at her level (not dumbed down)</li>
+  </ul>
+</div>
+
+<footer>
+  <p>The Spellbook · a dyslexia spelling programme built on encoding, morphology, and Harry Potter</p>
+  <p><a href="https://github.com/gethin/spellbook" style="color:var(--gold);text-decoration:none">View on GitHub</a></p>
+</footer>
+
+</div>
+
+<script>
+const LESSONS=[
+ {num:1,icon:'⚡',title:'What Spells Actually Mean',desc:'Voldemort, Lumos, Reducto — spells are built from Latin bricks. Start with the name everyone knows.',path:'lesson-1.html',status:'Start',active:true},
+ {num:2,icon:'👻',title:'The Silent Letters',desc:'Five letters nobody says out loud, hidden inside famous names and places from Hogwarts.',path:'lesson-2.html',status:'Start',active:true},
+ {num:3,icon:'📚',title:'Nobody\'s Name Is An Accident',desc:'Remus Lupin, Draco Malfoy, Bellatrix — every character name is a clue about who they are.',path:'lesson-3.html',status:'Start',active:true},
+ {num:4,icon:'🔊',title:'One Sound, Five Spellings',desc:'The /er/ sound has five different spellings, with one rule — and Wormtail knows it.',path:'lesson-4.html',status:'Start',active:true},
+ {num:5,icon:'🌀',title:'The Four Houses of "OU"',desc:'Four different sounds hiding in one spelling. Sprout, Ghoul, Flourish, Sought.',path:'#',status:'Coming soon',active:false},
+ {num:6,icon:'🌙',title:'Transfiguration (Suffix Rules)',desc:'Add a letter, double a letter, or drop the E — three rules that cover hundreds of words.',path:'#',status:'Coming soon',active:false},
+ {num:7,icon:'⚡',title:'The /shun/ Ending',desc:'-tion, -sion, -cian — one sound, three spellings, one test to tell them apart.',path:'#',status:'Coming soon',active:false},
+ {num:8,icon:'🐉',title:'Creatures & Cumulative Review',desc:'Plurals, dictation, and everything from lessons 1–7 all mixed together.',path:'#',status:'Coming soon',active:false}
+];
+
+const grid=document.getElementById('lessonGrid');
+LESSONS.forEach(L=>{
+  const card=document.createElement('a');
+  card.className='card'+(L.active?' active':' locked');
+  card.href=L.path;
+  if(!L.active)card.style.cursor='not-allowed';
+  card.innerHTML=`
+    <div class="num">Lesson ${L.num}</div>
+    <div class="icon">${L.icon}</div>
+    <h3>${L.title}</h3>
+    <p class="desc">${L.desc}</p>
+    <div class="status">${L.active?'<button class="btn">'+L.status+'</button>':L.status}</div>
+  `;
+  grid.appendChild(card);
+});
+</script>
+</body>
+</html>
