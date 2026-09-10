@@ -248,7 +248,7 @@ details.idea .mins{font-size:12px;color:var(--muted);font-weight:normal;opacity:
   <div class="finale">
     <span class="em">🐉</span>
     <h1>Lesson eight, done.</h1>
-    <p class="big">Plurals, and every pattern from the whole programme.</p>
+    <p class="big">Plurals, and every pattern from the first seven lessons.</p>
   </div>
 
   <div class="card">
@@ -262,8 +262,8 @@ details.idea .mins{font-size:12px;color:var(--muted);font-weight:normal;opacity:
   </div>
 
   <div class="card gold" style="border-width:2px">
-    <div class="eyebrow">All eight lessons</div>
-    <p style="margin:0" class="big">Latin bricks. Silent letters. Names that mean things. The /er/ sound. The four houses of OU. Three transfigurations. Three /shun/ endings. And now plurals.<br><br><b style="color:var(--gold)">That is the whole Spellbook. You finished it.</b></p>
+    <div class="eyebrow">Lessons one to eight</div>
+    <p style="margin:0" class="big">Latin bricks. Silent letters. Names that mean things. The /er/ sound. The four houses of OU. Three transfigurations. Three /shun/ endings. And now plurals.<br><br><b style="color:var(--gold)">That is the first eight. Four to go — prefixes, two lots of Greek, and the laziest sound in English.</b></p>
   </div>
 
   
@@ -321,7 +321,7 @@ details.idea .mins{font-size:12px;color:var(--muted);font-weight:normal;opacity:
   <hr class="sep">
   <p style="margin-top:16px"><a href="index.html" class="btn ghost">← Back to all lessons</a></p>
   <p style="margin-top:8px"><a href="potions.html" class="btn ghost">🧪 Potions — Advanced Word-Making →</a></p>
-  <p class="tiny">The Spellbook · Lesson 8 of 8</p>
+  <p class="tiny">The Spellbook · Lesson 8 of 12</p>
 </section>
 
 </div>
@@ -398,12 +398,12 @@ function answer(btn,L,q){
       qi++;
       if(qi<QUIZ.length){renderQ();}
       else{
-        document.getElementById('quizTitle').textContent='The whole Spellbook, done.';
+        document.getElementById('quizTitle').textContent='Eight lessons, all mixed together.';
         document.getElementById('qEm').textContent='\uD83C\uDFC5';
         document.getElementById('qWord').innerHTML='<span style="color:var(--gold)">'+score+' / '+QUIZ.length+'</span>';
         document.getElementById('qClue').textContent='';
         document.getElementById('qOpts').innerHTML='';
-        document.getElementById('qFb').innerHTML='<span class="ok">Eight lessons. Every pattern. All yours.</span>';
+        document.getElementById('qFb').innerHTML='<span class="ok">Eight down. Every pattern so far, all yours.</span>';
         document.getElementById('qTally').textContent='';
         document.getElementById('quizNext').style.display='block';
       }

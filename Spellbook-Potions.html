@@ -119,6 +119,27 @@ hr.sep{border:0;border-top:1px solid var(--line);margin:26px 0}
 .topnav a{font-size:13px;color:var(--muted);text-decoration:none;border:1px solid var(--line);
   border-radius:20px;padding:7px 14px;background:rgba(0,0,0,.22);transition:.15s;white-space:nowrap}
 .topnav a:active{transform:scale(.96);border-color:var(--gold-dim);color:var(--cream)}
+
+.out.old{border-color:#C89A5E;background:linear-gradient(180deg,#3A2C17,#241A0E)}
+.out.old .tag{color:#E3B270}
+.out.near{border-color:var(--suf);background:linear-gradient(180deg,#1B3145,#132534)}
+.out.near .tag{color:var(--suf)}
+.out.new{border-color:var(--suf);background:linear-gradient(180deg,#1B3145,#132534)}
+.out.new .tag{color:var(--suf)}
+.chip.old{border-color:#8A6134;color:#E3B270}
+.chip.near,.chip.new{border-style:dashed;color:var(--muted)}
+.hunt{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin:18px 0}
+.hunt h3{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--gold-dim);margin:0 0 6px}
+.rootbars{display:grid;grid-template-columns:repeat(auto-fit,minmax(126px,1fr));gap:8px;margin:12px 0}
+.rb{background:var(--card2);border:1px solid var(--line);border-radius:11px;padding:9px 11px;cursor:pointer;transition:.15s}
+.rb:active{transform:scale(.96)}
+.rb.done{border-color:var(--gold-dim);background:linear-gradient(180deg,#4A3A1E,#2E2413)}
+.rb .t{display:flex;justify-content:space-between;align-items:baseline;font-size:15px;font-weight:bold;margin-bottom:6px}
+.rb .t span:last-child{color:var(--muted);font-weight:normal;font-size:12px}
+.rb .bar{height:6px;background:rgba(255,255,255,.09);border-radius:4px;overflow:hidden}
+.rb .fill{height:100%;background:linear-gradient(90deg,var(--gold-dim),var(--gold));border-radius:4px}
+#challengeOut{border:1px solid var(--gold-dim);border-radius:14px;padding:14px 16px;margin-top:10px;
+  background:linear-gradient(180deg,#4A3A1E,#2E2413)}
 </style>
 </head>
 <body>
@@ -162,8 +183,18 @@ hr.sep{border:0;border-top:1px solid var(--line);margin:26px 0}
   <div class="count" id="count"></div>
 </div>
 
+
+<div class="hunt">
+  <h3>Roots you're hunting</h3>
+  <p class="muted" style="font-size:14px;margin:0">Every root has a set number of real words hiding behind it.
+  Tap one to load it into the cauldron and go looking.</p>
+  <div class="rootbars" id="rootbars"></div>
+  <button class="btn ghostbtn small" onclick="challenge()">Set me a challenge</button>
+  <div id="challengeOut" style="display:none"><p style="margin:0" id="challengeText"></p></div>
+</div>
+
 <div class="note">
-  <b>For the tutor.</b> A dashed chip is an invented word — that is a <b>success</b>, not a mistake. If Sofia can read a word that has never existed and tell you what it would mean, her morphological processing is working. Ask her: which piece told you that? Could you change the root and keep the meaning?
+  <b>For the tutor.</b> A dashed chip is an invented word — that is a <b>success</b>, not a mistake. A bronze one is a real word that fell out of use centuries ago. If Sofia can read a word that has never existed and tell you what it would mean, her morphological processing is working. Ask her: which piece told you that? Could you change the root and keep the meaning?
 </div>
 
 <hr class="sep">
@@ -275,6 +306,18 @@ const LAT={
  'pro|tract|':'To pull something forward — to drag it out longer.',
  'de|tract|':'To pull away from something good.',
  '|tract|or':'The thing that pulls.',
+ 're|duct|ive':'Tending to lead things back down — boiling an idea down to something simpler.',
+ 'sub|duct|ion':'The act of leading something under. One piece of the Earth’s crust sliding beneath another.',
+ 'trans|duct|ion':'The act of leading across — turning one kind of signal into another.',
+ 'pro|ject|ive':'Tending to throw forward.',
+ 'sub|ject|ion':'The act of being thrown under someone else’s power.',
+ 're|port|able':'Able to be carried back and told.',
+ 'in|dict|able':'Able to be officially charged with doing something wrong.',
+ 'sub|struct|ure':'The structure underneath — the part holding everything else up.',
+ 'de|struct|or':'A thing that un-builds.',
+ 'sub|tract|ive':'Tending to take away.',
+ 're|tract|or':'A thing that pulls something back.',
+ '|tract|':'A stretch of land — or a short piece of writing pushed into your hand.',
  'con|ject|ure':'Throwing ideas together — a guess built from what you already know.',
  'con|script|':'Someone whose name was written down with everyone else — made to join the army.',
  'con|script|ion':'The act of writing names down to make people join up.',
@@ -378,6 +421,9 @@ const NEAR={
  'photo|logy':['photography','Not quite — but photo + graphy gives you photography.'],
 };
 
+const OLD=new Set('con|dict|ion con|duct|ible con|ject|ive con|script|ive con|struct|er con|struct|ible con|struct|ure con|tract|able con|tract|ation con|tract|er con|tract|ible con|tract|ive con|tract|ure de|ject|ure de|port|able de|port|er de|spect| de|tract|er de|tract|ive de|vis|able de|vis|al de|vis|er de|vis|or ex|tract|ible im|mort|able im|port|able im|port|ment in|dict|er in|dict|ion in|dict|ive in|dict|or in|port| in|script| in|script|ible in|script|ive in|spect|able in|spect|ive in|struct|er in|struct|ible pre|dict|ation pre|mort|al pre|script|ible pre|vis|ible pre|vis|ion pre|vis|ive pre|vis|or pro|duct|ible pro|duct|or pro|ject|able pro|ject|ure pro|script| pro|script|ion pro|script|ive pro|spect|ion pro|tract|er pro|tract|ible pro|tract|ion pro|tract|ive pro|vis|ive pro|vis|or re|dict|ation re|duct| re|duct|or re|ject|able re|ject|er re|ject|ive re|ject|ment re|ject|or re|port|ion re|script| re|script|ion re|script|ive re|spect|er re|tract|ation re|tract|ible re|tract|ive re|vis|able re|vis|al re|vis|er re|vis|ible re|vis|or sub|duct| sub|ject|able sub|ject|ible sub|port| sub|script|ive sub|script|ure sub|struct| sub|struct|ion sub|tract|er sub|vis|ible trans|port|al trans|port|ive trans|port|ment |duct|ible |duct|ion |duct|or |mort| |port|ment |port|or |script|ion |script|ive |script|or |vis| |vis|ive'.split(' '));
+const OLDG=new Set('astro|graph astro|meter astro|scope astro|sphere auto|gram auto|logy auto|phone auto|scope bio|meter bio|nomy bio|scope chrono|gram chrono|nomy chrono|scope geo|phone hydro|graph hydro|path hydro|scope micro|gram micro|graph micro|logy micro|sphere photo|gram photo|phone photo|scope tele|meter thermo|gram thermo|graph thermo|logy thermo|phone thermo|scope'.split(' '));
+
 const LATNEAR={
  '|spect|er':['spectre','Almost — in British English the last two letters swap round: <b>spectre</b>.'],
  'con|ject|':['conjecture','Almost — <b>conject</b> died out. Add <b>-ure</b> and you get <b>conjecture</b>.'],
@@ -451,6 +497,7 @@ function setMode(m){
   mode=m; clearBench();
   document.getElementById('mLatin').classList.toggle('on',m==='latin');
   document.getElementById('mGreek').classList.toggle('on',m==='greek');
+  renderRoots();
 }
 
 /* ------------------------------------------------ drag + tap */
@@ -512,48 +559,109 @@ function inventLatin(p,r,s){
 }
 function forge(){
   const out=document.getElementById('out');
-  let word,key,real,meaning,parts,near=null;
+  let word,key,meaning,parts,near=null,tier;
   if(mode==='latin'){
     const p=bench.prefix||'',r=bench.root,s=bench.suffix||'';
     key=p+'|'+r+'|'+s; word=joinLatin(p,r,s);
-    real=LAT[key]; near=LATNEAR[key];
-    meaning=real||(near?near[1]:inventLatin(p,r,s));
+    near=LATNEAR[key];
+    tier = LAT[key] ? 'real' : (near ? 'near' : (OLD.has(key) ? 'old' : 'new'));
+    meaning = LAT[key] || (near ? near[1] : inventLatin(p,r,s));
     parts=(p?'<span class="p">'+p+'</span>':'')+'<span class="r">'+r+'</span>'+(s?'<span class="s">'+s+'</span>':'');
   }else{
     const a=bench.g1,b=bench.g2;
     key=a+'|'+b; word=a+b;
-    real=GRK[key]; near=NEAR[key];
+    near=NEAR[key];
     const B=find('g2',b), A=find('g1',a);
-    meaning=real||(near?near[1]:B.t.replace('$',A.m));
+    tier = GRK[key] ? 'real' : (near ? 'near' : (OLDG.has(key) ? 'old' : 'new'));
+    meaning = GRK[key] || (near ? near[1] : B.t.replace('$',A.m));
     parts='<span class="r">'+a+'</span><span class="s">'+b+'</span>';
   }
-  const isReal=!!real;
-  out.className='out '+(isReal?'real':'invent');
+  const TAG={real:'\u2713 A real word',old:'\u26B1\uFE0F A forgotten word',
+             near:'\u2726 So close',new:'\u2726 You invented one'};
+  const SUB={
+    old:'This really was a word \u2014 people used it hundreds of years ago and then stopped. It is still sitting in the big dictionaries, waiting.',
+    near:near?('The real word is <b style="color:var(--gold)">'+(near[0]||'')+'</b>.'):'',
+    new:'You just made that one up \u2014 but you can still read it, and so could anyone who knows the pieces. That is the whole trick.'
+  };
+  out.className='out '+tier;
   out.style.display='block';
-  out.innerHTML=
-    '<div class="tag">'+(isReal?'\u2713 A real word':(near?'\u2726 So close':'\u2726 You invented one'))+'</div>'+
+  out.innerHTML='<div class="tag">'+TAG[tier]+'</div>'+
     '<div class="word">'+parts+'</div>'+
     '<div class="mean">'+meaning+'</div>'+
-    (isReal?'':'<div class="sub">'+(near
-        ? 'The real word is <b style="color:var(--gold)">'+near[0]+'</b>. You were one letter away.'
-        : 'You just made that one up \u2014 but you can still read it, and so could anyone who knows the pieces. That is the whole trick.')+'</div>');
-  record(word,isReal);
+    (tier==='real'?'':'<div class="sub">'+SUB[tier]+'</div>');
+  record(word,tier,key);
 }
-function record(w,isReal){
+function record(w,tier,key){
   if(forged.some(f=>f.w===w))return;
-  forged.push({w:w,real:isReal});
+  forged.push({w:w,tier:tier,key:key,mode:mode});
   const box=document.getElementById('chips'); box.innerHTML='';
   forged.forEach(f=>{
     const c=document.createElement('span');
-    c.className='chip'+(f.real?'':' inv'); c.textContent=f.w;
+    c.className='chip'+(f.tier==='real'?'':' '+f.tier); c.textContent=f.w;
     box.appendChild(c);
   });
-  const r=forged.filter(f=>f.real).length;
+  const r=forged.filter(f=>f.tier==='real').length;
+  const o=forged.filter(f=>f.tier==='old').length;
+  const n=forged.filter(f=>f.tier==='new'||f.tier==='near').length;
   document.getElementById('count').textContent=
-    r+' real '+(r===1?'word':'words')+' \u00b7 '+(forged.length-r)+' invented';
+    r+' real \u00b7 '+o+' forgotten \u00b7 '+n+' invented';
+  renderRoots();
+}
+
+/* ---- how many curated real words hide behind each root / Greek piece */
+const TOTALS={latin:{},greek:{}};
+Object.keys(LAT).forEach(k=>{const r=k.split('|')[1];TOTALS.latin[r]=(TOTALS.latin[r]||0)+1;});
+Object.keys(GRK).forEach(k=>{const a=k.split('|')[0];TOTALS.greek[a]=(TOTALS.greek[a]||0)+1;});
+
+function renderRoots(){
+  const box=document.getElementById('rootbars'); if(!box)return;
+  box.innerHTML='';
+  const isL = mode==='latin';
+  const pool = isL?ROOT:G1;
+  const totals = isL?TOTALS.latin:TOTALS.greek;
+  pool.forEach(o=>{
+    const total=totals[o.k]||0; if(!total)return;
+    const got=forged.filter(f=>f.mode===mode && f.tier==='real' &&
+              f.key.split('|')[isL?1:0]===o.k).length;
+    const d=document.createElement('div');
+    d.className='rb'+(got>=total?' done':'');
+    d.innerHTML='<div class="t"><span>'+o.k+'</span><span>'+got+' / '+total+'</span></div>'+
+                '<div class="bar"><div class="fill" style="width:'+Math.round(got/total*100)+'%"></div></div>';
+    d.onclick=()=>{
+      clearBench();
+      bench[isL?'root':'g1']=o.k; refresh();
+      window.scrollTo({top:0,behavior:'smooth'});
+    };
+    box.appendChild(d);
+  });
+}
+
+function challenge(){
+  const isL = mode==='latin';
+  const pool = isL?ROOT:G1;
+  const totals = isL?TOTALS.latin:TOTALS.greek;
+  const open = pool.filter(o=>{
+    const total=totals[o.k]||0; if(!total)return false;
+    const got=forged.filter(f=>f.mode===mode && f.tier==='real' &&
+              f.key.split('|')[isL?1:0]===o.k).length;
+    return got<total;
+  });
+  const out=document.getElementById('challengeOut');
+  const txt=document.getElementById('challengeText');
+  out.style.display='block';
+  if(!open.length){ txt.innerHTML='You have found every real word in here. Switch to the other language and start again.'; return; }
+  const pick=open[Math.floor(Math.random()*open.length)];
+  const total=totals[pick.k];
+  const got=forged.filter(f=>f.mode===mode && f.tier==='real' &&
+            f.key.split('|')[isL?1:0]===pick.k).length;
+  txt.innerHTML='Your root is <b style="color:var(--gold)">'+pick.k+'</b> \u2014 it means <b>'+pick.m+
+    '</b>. There are <b>'+total+'</b> real words hiding behind it and you have '+got+
+    '. Go and find one more.';
+  clearBench(); bench[isL?'root':'g1']=pick.k; refresh();
 }
 
 refresh();
+renderRoots();
 </script>
 </body>
 </html>

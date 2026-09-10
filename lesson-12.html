@@ -3,35 +3,25 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>The Spellbook — One Sound, Five Spellings</title>
+<title>The Spellbook — The Lazy Vowel</title>
 <style>
 :root{
-  --bg:#1C1013; --card:#2E1A1F; --card2:#3B2229; --line:#5A3039;
-  --gold:#F0C24E; --gold-dim:#B08F35; --cream:#F5EDE8; --muted:#C9A9AF;
+  --bg:#16131A; --card:#241F2B; --card2:#2F2939; --line:#4A4159;
+  --gold:#F0C24E; --gold-dim:#B08F35; --cream:#F4EFE8; --muted:#B3A8C0;
   --green:#5FD6A4; --pink:#FF8FB1;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;padding:0}
 body{
-  background:
-    url('overlay-dark.png'),
-    radial-gradient(1100px 780px at 50% -8%, #4A2129 0%, var(--bg) 62%);
-  background-attachment:fixed; background-size:auto; background-repeat:repeat; color:var(--cream);
+  background:radial-gradient(1100px 780px at 50% -8%, #2A2333 0%, var(--bg) 62%);
+  background-attachment:fixed; color:var(--cream);
   font-family:"Trebuchet MS",Verdana,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-  min-height:100vh; line-height:1.6; overflow-x:hidden;
+  min-height:100vh; overflow-x:hidden; position:relative;
 }
 body::before{
-  content:'';
-  position:fixed;
-  top:0;
-  left:0;
-  right:0;
-  bottom:0;
-  background-image:url('overlay-dark.png');
-  background-attachment:fixed;
-  opacity:0.2;
-  pointer-events:none;
-  z-index:0;
+  content:'';position:fixed;top:0;left:0;right:0;bottom:0;
+  background-image:url('overlay-dark.png');background-attachment:fixed;
+  opacity:0.2;pointer-events:none;z-index:0;
 }
 .wrap{position:relative;z-index:1;max-width:760px;margin:0 auto;padding:22px 18px 120px}
 .screen{display:none;animation:fade .45s ease}
@@ -46,40 +36,40 @@ p{font-size:clamp(17px,4.1vw,19px);margin:0 0 16px}
 .big{font-size:clamp(19px,4.7vw,22px)}
 
 .btn{display:block;width:100%;border:0;cursor:pointer;font-family:inherit;
-  background:linear-gradient(180deg,var(--gold),#D3A238);color:#2A161B;
+  background:linear-gradient(180deg,var(--gold),#D3A238);color:#2A2416;
   font-size:20px;font-weight:bold;padding:17px 20px;border-radius:16px;
-  box-shadow:0 5px 0 #8A6E2A;margin-top:10px;transition:transform .08s,box-shadow .08s}
+  box-shadow:0 5px 0 #8A6E2A;margin-top:10px;transition:transform .08s,box-shadow .08s;
+  text-align:center;text-decoration:none}
 .btn:active{transform:translateY(4px);box-shadow:0 1px 0 #8A6E2A}
 .btn.ghost{background:transparent;color:var(--muted);box-shadow:none;border:1px solid var(--line);font-size:16px;font-weight:normal;padding:12px}
 .btn.ghost:active{transform:none}
 
 .card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:20px;margin:14px 0}
-.card.gold{border-color:var(--gold-dim);background:linear-gradient(180deg,#40242C,#2B181D)}
-.card.dark{background:linear-gradient(180deg,#241317,#160C0F);border-color:#55282F}
+.card.gold{border-color:var(--gold-dim);background:linear-gradient(180deg,#3B3349,#241F2C)}
+.card.dark{background:linear-gradient(180deg,#1F1B26,#151219);border-color:var(--line)}
 
 .wordbox{text-align:center;padding:22px 12px;margin:16px 0}
-.hugeword{font-size:clamp(34px,9.5vw,62px);font-weight:bold;letter-spacing:1px;line-height:1.08}
+.hugeword{font-size:clamp(30px,8.4vw,56px);font-weight:bold;letter-spacing:1px;line-height:1.08;word-break:break-word}
 .hugeword .g{color:var(--gold);background:rgba(240,194,78,.16);border-radius:8px;padding:0 6px}
 .icon{font-size:clamp(52px,14vw,78px);line-height:1;display:block;margin-bottom:10px}
 
-/* the five-name stack */
 .stack{margin:20px 0}
 .row{display:flex;align-items:center;gap:14px;background:var(--card);
   border:1px solid var(--line);border-radius:16px;padding:14px 16px;margin-bottom:10px;
   animation:slide .5s backwards}
 @keyframes slide{from{opacity:0;transform:translateX(-16px)}to{opacity:1;transform:none}}
 .row .em{font-size:30px;line-height:1;flex:0 0 auto}
-.row .nm{font-size:clamp(19px,5vw,25px);font-weight:bold;letter-spacing:.5px}
+.row .nm{font-size:clamp(17px,4.4vw,23px);font-weight:bold;letter-spacing:.5px}
 .row .nm .g{color:var(--gold);background:rgba(240,194,78,.17);border-radius:6px;padding:1px 5px}
-.row .sp{margin-left:auto;font-size:15px;color:var(--muted);flex:0 0 auto}
+.row .sp{margin-left:auto;font-size:14px;color:var(--muted);flex:0 0 auto;text-align:right}
 
 .houses{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:20px 0}
 .house{background:var(--card);border:1px solid var(--line);border-radius:18px;
   padding:16px 12px;text-align:center;cursor:pointer;transition:.18s}
 .house:active{transform:scale(.96)}
-.house.opened{border-color:var(--gold-dim);background:linear-gradient(180deg,#42262E,#2E1A1F)}
+.house.opened{border-color:var(--gold-dim);background:linear-gradient(180deg,#3B3349,#241F2C)}
 .house .em{font-size:36px;line-height:1;display:block;margin-bottom:7px}
-.house .lt{font-size:27px;font-weight:bold;color:var(--gold);letter-spacing:2px}
+.house .lt{font-size:25px;font-weight:bold;color:var(--gold);letter-spacing:2px}
 .house .nm{font-size:14px;color:var(--muted);margin-top:3px}
 
 .fam{font-size:16px;color:var(--muted);line-height:1.85}
@@ -87,13 +77,14 @@ p{font-size:clamp(17px,4.1vw,19px);margin:0 0 16px}
 
 .q{text-align:center;margin:16px 0 6px}
 .q .em{font-size:46px;line-height:1;display:block;margin-bottom:8px}
-.q .gap{font-size:clamp(30px,8vw,48px);font-weight:bold;letter-spacing:1px}
+.q .gap{font-size:clamp(26px,7vw,44px);font-weight:bold;letter-spacing:1px;word-break:break-word}
 .q .gap .blank{color:var(--gold);border-bottom:4px solid var(--gold-dim);padding:0 8px}
+.q .gap .g{color:var(--gold);background:rgba(240,194,78,.16);border-radius:8px;padding:0 6px}
 .q .clue{font-size:16px;color:var(--muted);margin-top:8px;line-height:1.45}
-.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(84px,1fr));gap:10px;margin:20px 0 6px}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(88px,1fr));gap:10px;margin:20px 0 6px}
 .opt{background:var(--card2);border:1px solid var(--line);border-radius:14px;
-  padding:16px 6px;font-size:23px;font-weight:bold;color:var(--cream);
-  cursor:pointer;font-family:inherit;letter-spacing:2px;transition:.15s}
+  padding:16px 6px;font-size:18px;font-weight:bold;color:var(--cream);
+  cursor:pointer;font-family:inherit;letter-spacing:1px;transition:.15s;word-break:break-word}
 .opt:active{transform:scale(.95)}
 .opt.right{background:#28624C;border-color:var(--green);color:#DFFFF1}
 .opt.wrong{background:#6A2A38;border-color:var(--pink);color:#FFE1EA;opacity:.75}
@@ -109,7 +100,7 @@ p{font-size:clamp(17px,4.1vw,19px);margin:0 0 16px}
 
 .picks{display:grid;grid-template-columns:repeat(auto-fit,minmax(104px,1fr));gap:12px;margin:18px 0}
 .pick{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:16px 6px;text-align:center;cursor:pointer;transition:.15s}
-.pick.sel{border-color:var(--gold);background:linear-gradient(180deg,#42262E,#2E1A1F)}
+.pick.sel{border-color:var(--gold);background:linear-gradient(180deg,#3B3349,#241F2C)}
 .pick .em{font-size:36px;display:block;line-height:1.2}
 .pick .nm{font-size:14px;color:var(--muted);margin-top:4px}
 .pick.sel .nm{color:var(--gold)}
@@ -117,7 +108,7 @@ p{font-size:clamp(17px,4.1vw,19px);margin:0 0 16px}
 .finale{text-align:center;padding:18px 0}
 .finale .em{font-size:60px;display:block;margin-bottom:12px}
 hr.sep{border:0;border-top:1px solid var(--line);margin:26px 0}
-.tiny{font-size:13px;color:#8E6C74;text-align:center;margin-top:24px}
+.tiny{font-size:13px;color:var(--muted);opacity:.7;text-align:center;margin-top:24px}
 
 /* --- tutor blocks --- */
 .tutor{background:rgba(0,0,0,.26);border:1px solid var(--line);border-left:4px solid var(--gold-dim);
@@ -157,49 +148,45 @@ details.idea .mins{font-size:12px;color:var(--muted);font-weight:normal;opacity:
 </div>
 
 
-<!-- ============ 1. HOOK ============ -->
 <section class="screen on" id="s1">
   <div class="dots" data-step="1"></div>
-  <div class="eyebrow">Lesson four</div>
-  <h2>Say her name.</h2>
+  <div class="eyebrow">Lesson twelve</div>
+  <h2>One sound. Any vowel letter at all.</h2>
 
   <div class="wordbox" style="padding:10px 12px">
-    <span class="icon">📚</span>
-    <div class="hugeword"><span class="g">HER</span>MIONE</div>
+    <span class="icon">😴</span>
+    <div class="hugeword">PROFESS<span class="g">OR</span></div>
   </div>
 
-  <p class="big">Her-my-oh-nee. Listen to the very start of it. That sound — <b style="color:var(--gold)">/er/</b> — is the single most common sound in English writing.</p>
+  <p class="big">Say it out loud. <b>Professor</b>. That last bit — did you say <i>or</i>? No you didn’t. You said <b>uh</b>. Now say <b>teacher</b>, <b>collar</b>, <b>measure</b>. Same lazy <i>uh</i>, four different spellings.</p>
 
   <div class="card dark">
-    <p style="margin:0" class="big">It also has <b style="color:var(--gold)">five different spellings</b>, and you cannot hear which one you need. That is not you being bad at spelling. That is English being a mess.</p>
+    <p style="margin:0" class="big">English has one sound that <b>any</b> vowel letter can make. It only turns up in the quiet part of a word — the bit you don’t lean on. It causes more spelling mistakes than anything else in this book.</p>
   </div>
 
-  <button class="btn" onclick="go(2)">Show me the five →</button>
+  <button class="btn" onclick="go(2)">Show me the four →</button>
 </section>
 
-<!-- ============ 2. THE PROBLEM ============ -->
 <section class="screen" id="s2">
   <div class="dots" data-step="2"></div>
-  <div class="eyebrow">Same sound. Every time.</div>
-  <h2>Say these five out loud</h2>
-  <p class="muted">Listen to the gold bit in each one. It's the identical sound in all five.</p>
+  <div class="eyebrow">One sound, four endings</div>
+  <h2>Say all four endings</h2>
+  <p class="muted">Your mouth does exactly the same thing every time.</p>
 
   <div class="stack" id="stack"></div>
 
   <div class="card gold">
-    <p style="margin:0" class="big">One sound. Five spellings. <b style="color:var(--gold)">er, ir, ur, ear, or.</b></p>
+    <p style="margin:0" class="big">Same sound, four spellings, and <b>no rule</b> that sorts them. But there IS a trick, and it works far more often than it has any right to.</p>
   </div>
 
-  <p class="muted">There's no rule that tells you which. So you don't learn a rule — you learn five names, and you sort every new word under one of them.</p>
-  <button class="btn" onclick="go(3)">Meet the five →</button>
+  <button class="btn" onclick="go(3)">Show me the trick →</button>
 </section>
 
-<!-- ============ 3. THE FIVE ============ -->
 <section class="screen" id="s3">
   <div class="dots" data-step="3"></div>
-  <div class="eyebrow">Five anchors</div>
+  <div class="eyebrow">Three endings and one trick</div>
   <h2>Tap each one</h2>
-  <p class="muted">Each name holds a spelling, and a gang of ordinary words that use it too.</p>
+  <p class="muted">Start with the trick. It is the most useful thing on this screen.</p>
 
   <div class="houses" id="houseGrid"></div>
 
@@ -208,44 +195,18 @@ details.idea .mins{font-size:12px;color:var(--muted);font-weight:normal;opacity:
     <p style="margin:0" class="fam" id="houseFam"></p>
   </div>
 
-  <button class="btn" onclick="go(4)">There is one actual rule →</button>
+  <button class="btn" onclick="go(4)">Test me →</button>
 </section>
 
-<!-- ============ 4. THE W RULE ============ -->
 <section class="screen" id="s4">
   <div class="dots" data-step="4"></div>
-  <div class="eyebrow">The only rule in the lesson</div>
-  <h2>Wormtail's rule</h2>
-
-  <div class="wordbox" style="padding:8px 12px;margin-top:6px">
-    <span class="icon">🐀</span>
-    <div class="hugeword">W<span class="g">OR</span>MTAIL</div>
-  </div>
-
-  <div class="card gold">
-    <p style="margin:0" class="big">After a <b style="color:var(--gold)">w</b>, the /er/ sound is nearly always spelled <b style="color:var(--gold)">or</b>.</p>
-  </div>
-
-  <p>Which fixes a whole pile of words in one go:</p>
-
-  <div class="card" style="text-align:center">
-    <p style="margin:0" class="big"><b>w<span style="color:var(--gold)">or</span>d &nbsp; w<span style="color:var(--gold)">or</span>k &nbsp; w<span style="color:var(--gold)">or</span>ld<br>w<span style="color:var(--gold)">or</span>m &nbsp; w<span style="color:var(--gold)">or</span>th &nbsp; w<span style="color:var(--gold)">or</span>se</b></p>
-  </div>
-
-  <p class="muted">Six words you probably guess at, sorted by one rat.</p>
-  <button class="btn" onclick="go(5)">Test me →</button>
-</section>
-
-<!-- ============ 5. QUIZ ============ -->
-<section class="screen" id="s5">
-  <div class="dots" data-step="5"></div>
   <div class="eyebrow">Your turn</div>
-  <h2 id="quizTitle">Which spelling?</h2>
-  <p class="muted">Every one of these has lost its /er/. Put the right spelling back.</p>
+  <h2 id="quizTitle">Which ending?</h2>
+  <p class="muted">Say each word in a silly, over-clear voice first. Then choose.</p>
 
   <div class="card" style="padding:22px 16px">
     <div class="q">
-      <span class="em" id="qEm">📚</span>
+      <span class="em" id="qEm">😴</span>
       <div class="gap" id="qWord"></div>
       <div class="clue" id="qClue"></div>
     </div>
@@ -254,15 +215,14 @@ details.idea .mins{font-size:12px;color:var(--muted);font-weight:normal;opacity:
     <div class="tally" id="qTally"></div>
   </div>
 
-  <button class="btn" id="quizNext" style="display:none" onclick="go(6)">Finished →</button>
+  <button class="btn" id="quizNext" style="display:none" onclick="go(5)">Finished →</button>
 </section>
 
-<!-- ============ 6. DRAW ============ -->
-<section class="screen" id="s6">
-  <div class="dots" data-step="6"></div>
+<section class="screen" id="s5">
+  <div class="dots" data-step="5"></div>
   <div class="eyebrow">Last bit</div>
-  <h2>Which anchor do you want to draw?</h2>
-  <p class="muted">Draw it, then write its name inside the picture with the /er/ spelling much bigger than the rest of the letters.</p>
+  <h2>Which one do you want to draw?</h2>
+  <p class="muted">Draw it, then write the word underneath with the last two letters much bigger.</p>
 
   <div class="picks" id="pickGrid"></div>
 
@@ -275,34 +235,30 @@ details.idea .mins{font-size:12px;color:var(--muted);font-weight:normal;opacity:
     <div class="th">Tutor — now do it on paper</div>
     <p>When the drawing is finished, say these six out loud, one at a time. Sofia writes them
     <b>on paper</b>, not on the screen.</p>
-    <div class="spellwords"><span>Hermione</span><span>world</span><span>curse</span><span>earth</span><span>third</span><span>worm</span></div>
+    <div class="spellwords"><span>professor</span><span>teacher</span><span>collar</span><span>doctor</span><span>calendar</span><span>picture</span></div>
     <p>Then she checks her own six against this screen <b>before you say anything</b>. Tapping the right
     answer is recognising a word. Writing it from memory is spelling it, and only the second one is
     what we are actually after.</p>
   </div>
 
-  <button class="btn" onclick="go(7)">Done →</button>
+  <button class="btn" onclick="go(6)">Done →</button>
 </section>
 
-<!-- ============ 7. END ============ -->
-<section class="screen" id="s7">
+<section class="screen" id="s6">
   <div class="finale">
     <span class="em">🏆</span>
-    <h1>Lesson four, done.</h1>
-    <p class="big">Five spellings, five anchors, and one rat with a rule.</p>
+    <h1>Lesson twelve, done.</h1>
+    <p class="big">The laziest sound in English, and how to catch it.</p>
   </div>
 
   <div class="card">
-    <div class="eyebrow">Your five</div>
-    <p style="margin:0" class="fam">
-      📚 <b>er</b> Hermione &nbsp;·&nbsp; 🧹 <b>ir</b> Firebolt &nbsp;·&nbsp; 🏰 <b>ur</b> Durmstrang<br>
-      🍬 <b>ear</b> Earwax &nbsp;·&nbsp; 🐀 <b>or</b> Wormtail
-    </p>
+    <div class="eyebrow">Your endings, and the trick</div>
+    <p style="margin:0" class="fam">🧑‍🏫 <b>-er</b> — the default. Teacher, water, winter<br>🎓 <b>-or</b> — often a job, often from Latin. Doctor, actor, professor<br>👔 <b>-ar</b> — a short list worth learning. Collar, sugar, calendar<br>🖼️ <b>-ure</b> — picture, measure, adventure<br><br>🗣️ <b>The trick</b> — say it in a silly over-clear voice</p>
   </div>
 
   <div class="card gold">
-    <div class="eyebrow">When you get stuck</div>
-    <p style="margin:0" class="big">Don't sound it out — it won't help, there's nothing to hear. Ask instead: <b style="color:var(--gold)">which name does this word belong to?</b></p>
+    <div class="eyebrow">When you're stuck</div>
+    <p style="margin:0" class="big">Say the word in a <b style="color:var(--gold)">silly, over-clear voice</b>, sounding every single letter. <i>Col-LAR. Wed-NES-day. Sep-A-rate.</i> If that still doesn’t settle it, write <b>-er</b> — it wins more often than the other three.</p>
   </div>
 
   
@@ -310,7 +266,7 @@ details.idea .mins{font-size:12px;color:var(--muted);font-weight:normal;opacity:
     <div class="th">Tutor — ideas for the rest of the session</div>
     <p>The lesson above is the input. Pick <b>one or two</b> of these for what's left of the hour —
     you do not need to do all of them, and you do not need to do the same ones every week.</p>
-    <p style="margin-top:10px"><b>Note for this lesson.</b> This one is about the /er/ sound — a spelling
+    <p style="margin-top:10px"><b>Note for this lesson.</b> This one is about the lazy vowel — a spelling
     pattern rather than word-building — so Potions won't reinforce it directly. <b>Word espionage</b>
     or <b>teach it back</b> will land better here. Potions is still fine as a change of pace if she wants it.</p>
   </div>
@@ -360,11 +316,16 @@ details.idea .mins{font-size:12px;color:var(--muted);font-weight:normal;opacity:
     activities, one per page, that cover the same eight patterns offline. One page is usually plenty.</div>
   </details>
 
+
+  <div class="card gold" style="border-width:2px">
+    <div class="eyebrow">All twelve lessons</div>
+    <p style="margin:0" class="big">Latin roots. Silent letters. Names that mean things. The /er/ sound. The four houses of OU. Three transfigurations. Three /shun/ endings. Plurals. Six prefixes. The Hogwarts timetable. The Greek letters. And now the lazy vowel.<br><br><b style="color:var(--gold)">That is the whole Spellbook. You finished it.</b></p>
+  </div>
+
   <hr class="sep">
-  <button class="btn ghost" onclick="restart()">Start again from the beginning</button>
   <p style="margin-top:16px"><a href="index.html" class="btn ghost">← Back to all lessons</a></p>
   <p style="margin-top:8px"><a href="potions.html" class="btn ghost">🧪 Potions — Advanced Word-Making →</a></p>
-  <p class="tiny">The Spellbook · Lesson 4 of 12</p>
+  <p class="tiny">The Spellbook · Lesson 12 of 12</p>
 </section>
 
 </div>
@@ -372,81 +333,55 @@ details.idea .mins{font-size:12px;color:var(--muted);font-weight:normal;opacity:
 <script>
 function esc(s){return (s||'').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));}
 
-/* ---------------- the five-name stack ---------------- */
-const STACK=[
- {em:'📚',pre:'H',g:'er',post:'mione',sp:'er'},
- {em:'🧹',pre:'F',g:'ir',post:'ebolt',sp:'ir'},
- {em:'🏰',pre:'D',g:'ur',post:'mstrang',sp:'ur'},
- {em:'🍬',pre:'',g:'Ear',post:'wax',sp:'ear'},
- {em:'🐀',pre:'W',g:'or',post:'mtail',sp:'or'}
-];
+const STACK=[{"em": "🎓", "pre": "Profess", "g": "or", "post": "", "sp": "says uh"}, {"em": "🧑‍🏫", "pre": "Teach", "g": "er", "post": "", "sp": "says uh"}, {"em": "👔", "pre": "Coll", "g": "ar", "post": "", "sp": "says uh"}, {"em": "📏", "pre": "Meas", "g": "ure", "post": "", "sp": "says uh"}];
 const st=document.getElementById('stack');
 STACK.forEach((r,i)=>{
   const d=document.createElement('div');
   d.className='row'; d.style.animationDelay=(i*130)+'ms';
   d.innerHTML='<span class="em">'+r.em+'</span>'+
     '<span class="nm">'+esc(r.pre)+'<span class="g">'+esc(r.g)+'</span>'+esc(r.post)+'</span>'+
-    '<span class="sp">'+r.sp+'</span>';
+    '<span class="sp">'+esc(r.sp)+'</span>';
   st.appendChild(d);
 });
 
-/* ---------------- the five anchors ---------------- */
-const HOUSES=[
- {em:'📚',lt:'er',nm:'Hermione',
-  info:'The most common of the five, and the one to guess if you have absolutely no idea.',
-  fam:'Same spelling: <b>serpent, term, herd, perch, verse, certain, herb, merchant</b> \u2014 plus <b>Percy</b>, <b>Ernie</b> and <b>Lavender</b>.'},
- {em:'🧹',lt:'ir',nm:'Firebolt',
-  info:'The fastest broom in the school. Also Professor Firenze, and the third floor corridor.',
-  fam:'Same spelling: <b>first, third, thirst, whirl, circle, birch, smirk, mirth</b>'},
- {em:'🏰',lt:'ur',nm:'Durmstrang',
-  info:'The other school, the one with the ship. Also the Burrow, and every single Unforgivable Curse.',
-  fam:'Same spelling: <b>curse, burn, lurk, murmur, purple, urn, hurl, nurse, surge</b>'},
- {em:'🍬',lt:'ear',nm:'Earwax',
-  info:'The worst Bertie Bott\u2019s flavour. Sneaky one, this \u2014 three letters making a sound you would expect two to make.',
-  fam:'Same spelling: <b>earth, learn, heard, search, pearl, hearth, yearn, rehearse</b>'},
- {em:'🐀',lt:'or',nm:'Wormtail',
-  info:'Peter Pettigrew. This is the only one of the five with a real rule attached \u2014 you will see it on the next screen.',
-  fam:'Same spelling: <b>word, work, world, worm, worth, worship, worse</b>'}
-];
+const HOUSES=[{"em": "🗣️", "lt": "!", "nm": "Say it silly", "info": "Say the word in a ridiculous over-clear voice, sounding every letter exactly as written. The lazy vowel wakes up and tells you what it really is. This is the most useful trick in the whole book.", "fam": "<b>Wed-NES-day → Wednesday<br>sep-A-rate → separate<br>choc-O-late → chocolate<br>dif-FER-ent → different<br>par-LIA-ment → parliament<br>col-LAR → collar</b>"}, {"em": "🧑‍🏫", "lt": "-er", "nm": "the default", "info": "Most of them. If you have tried the trick and you still cannot tell, write -er and you will usually be right.", "fam": "<b>teacher, farmer, weather, sister, water, letter, better, winter, remember, October</b>"}, {"em": "🎓", "lt": "-or", "nm": "jobs and Latin", "info": "Very often a person or thing doing a job — and very often built on a Latin root you already know from Lesson 1.", "fam": "<b>professor, doctor, actor, visitor, conductor, inspector, tractor, protractor, projector</b>"}, {"em": "👔", "lt": "-ar", "nm": "a short list", "info": "There are far fewer of these, so they are worth learning as a set rather than guessing at.", "fam": "<b>collar, sugar, dollar, popular, similar, particular, calendar, grammar, burglar</b>"}];
 const hg=document.getElementById('houseGrid');
 HOUSES.forEach(h=>{
   const d=document.createElement('div');
   d.className='house';
-  d.innerHTML='<span class="em">'+h.em+'</span><span class="lt">'+h.lt+'</span><div class="nm">'+h.nm+'</div>';
+  d.innerHTML='<span class="em">'+h.em+'</span><span class="lt">'+esc(h.lt)+'</span><div class="nm">'+esc(h.nm)+'</div>';
   d.onclick=()=>{
     d.classList.add('opened');
     document.getElementById('houseInfo').style.display='block';
-    document.getElementById('houseText').innerHTML='<b style="color:var(--gold)">'+h.nm+'</b> \u2014 '+h.info;
+    document.getElementById('houseText').innerHTML='<b style="color:var(--gold)">'+esc(h.nm)+'</b> \u2014 '+h.info;
     document.getElementById('houseFam').innerHTML=h.fam;
   };
   hg.appendChild(d);
 });
 
-/* ---------------- quiz ---------------- */
-const LETTERS=['er','ir','ur','ear','or'];
-const QUIZ=[
- {em:'📚',pre:'H',ans:'er',post:'mione',clue:'best in the year, obviously'},
- {em:'🧹',pre:'F',ans:'ir',post:'ebolt',clue:'the fastest broom'},
- {em:'🏰',pre:'D',ans:'ur',post:'mstrang',clue:'the school with the ship'},
- {em:'🍬',pre:'',ans:'ear',post:'wax',clue:'the flavour nobody wants'},
- {em:'🐀',pre:'W',ans:'or',post:'mtail',clue:'Peter Pettigrew'},
- {em:'📖',pre:'w',ans:'or',post:'d',clue:'after a w \u2014 remember the rat'},
- {em:'💀',pre:'c',ans:'ur',post:'se',clue:'the Unforgivable kind'},
- {em:'🌍',pre:'',ans:'ear',post:'th',clue:'the planet under your feet'},
- {em:'3️⃣',pre:'th',ans:'ir',post:'d',clue:'the floor you are not allowed on'},
- {em:'🐍',pre:'s',ans:'er',post:'pent',clue:'Slytherin\u2019s animal'}
-];
+const MODE='fill';
+const FIXED=["er", "or", "ar", "ure"];
+const QUIZ=[{"em": "🎓", "pre": "profess", "post": "", "ans": "or", "clue": "teaches at Hogwarts"}, {"em": "🧑‍🏫", "pre": "teach", "post": "", "ans": "er", "clue": "teaches at your school"}, {"em": "👔", "pre": "coll", "post": "", "ans": "ar", "clue": "goes round the neck of a shirt"}, {"em": "📏", "pre": "meas", "post": "", "ans": "ure", "clue": "find out how big something is"}, {"em": "🩺", "pre": "doct", "post": "", "ans": "or", "clue": "you see one when you are ill"}, {"em": "🍬", "pre": "sug", "post": "", "ans": "ar", "clue": "sweet, white, goes in tea"}, {"em": "💧", "pre": "wat", "post": "", "ans": "er", "clue": "you drink it"}, {"em": "🎭", "pre": "act", "post": "", "ans": "or", "clue": "someone in a film"}, {"em": "📅", "pre": "calend", "post": "", "ans": "ar", "clue": "shows you all the months"}, {"em": "❄️", "pre": "wint", "post": "", "ans": "er", "clue": "the cold season"}, {"em": "🖼️", "pre": "pict", "post": "", "ans": "ure", "clue": "you draw one"}, {"em": "🚜", "pre": "tract", "post": "", "ans": "or", "clue": "pulls things on a farm"}];
 let qi=0,score=0,locked=false;
+
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 
 function renderQ(){
   const q=QUIZ[qi]; locked=false;
-  document.getElementById('qEm').textContent=q.em;
-  document.getElementById('qWord').innerHTML=esc(q.pre)+'<span class="blank">? ?</span>'+esc(q.post);
-  document.getElementById('qClue').textContent=q.clue;
+  document.getElementById('qEm').textContent=q.em||'';
+  if(MODE==='fill'){
+    document.getElementById('qWord').innerHTML=esc(q.pre)+'<span class="blank">? ?</span>'+esc(q.post||'');
+  } else if(MODE==='label'){
+    document.getElementById('qWord').innerHTML=esc(q.pre)+'<span class="g">'+esc(q.g)+'</span>'+esc(q.post||'');
+  } else {
+    document.getElementById('qWord').innerHTML=esc(q.p);
+  }
+  document.getElementById('qClue').textContent=q.clue||'';
   document.getElementById('qFb').innerHTML='';
   document.getElementById('qTally').textContent=(qi+1)+' of '+QUIZ.length;
   const box=document.getElementById('qOpts'); box.innerHTML='';
-  LETTERS.forEach(L=>{
+  const opts = (MODE==='choose') ? shuffle(q.opts) : FIXED;
+  opts.forEach(L=>{
     const b=document.createElement('button');
     b.className='opt'; b.textContent=L;
     b.onclick=()=>answer(b,L,q);
@@ -457,52 +392,50 @@ function answer(btn,L,q){
   if(locked)return;
   if(L===q.ans){
     locked=true; btn.classList.add('right'); score++;
-    document.getElementById('qWord').innerHTML=esc(q.pre)+'<span class="blank">'+q.ans+'</span>'+esc(q.post);
-    document.getElementById('qFb').innerHTML='<span class="ok">That\u2019s the one \u2713</span>';
+    if(MODE==='fill'){
+      document.getElementById('qWord').innerHTML=esc(q.pre)+'<span class="blank">'+esc(q.ans)+'</span>'+esc(q.post||'');
+    } else if(MODE==='choose'){
+      document.getElementById('qWord').innerHTML='<span class="g">'+esc(q.ans)+'</span>';
+    }
+    document.getElementById('qFb').innerHTML='<span class="ok">'+(q.ok||'That\u2019s it \u2713')+'</span>';
     setTimeout(()=>{
       qi++;
       if(qi<QUIZ.length){renderQ();}
       else{
-        document.getElementById('quizTitle').textContent='All five, sorted.';
-        document.getElementById('qEm').textContent='🏅';
+        document.getElementById('quizTitle').textContent='The lazy vowel, caught.';
+        document.getElementById('qEm').textContent='\uD83C\uDFC5';
         document.getElementById('qWord').innerHTML='<span style="color:var(--gold)">'+score+' / '+QUIZ.length+'</span>';
         document.getElementById('qClue').textContent='';
         document.getElementById('qOpts').innerHTML='';
-        document.getElementById('qFb').innerHTML='<span class="ok">And not one of them could be worked out by sounding it out.</span>';
+        document.getElementById('qFb').innerHTML='<span class="ok">Say it silly. It works more often than it should.</span>';
         document.getElementById('qTally').textContent='';
         document.getElementById('quizNext').style.display='block';
       }
     },900);
   }else{
     btn.classList.add('wrong');
-    document.getElementById('qFb').innerHTML='<span class="no">Not that one \u2014 have another go.</span>';
+    document.getElementById('qFb').innerHTML='<span class="no">Not that one \u2014 try another.</span>';
   }
 }
 renderQ();
 
-/* ---------------- draw ---------------- */
-const PICKS=[
- {em:'📚',nm:'Hermione',b:'er'},{em:'🧹',nm:'Firebolt',b:'ir'},{em:'🏰',nm:'Durmstrang',b:'ur'},
- {em:'🍬',nm:'Earwax bean',b:'ear'},{em:'🐀',nm:'Wormtail',b:'or'},{em:'🐍',nm:'A serpent',b:'er'}
-];
+const PICKS=[{"em": "🎓", "nm": "A professor", "b": "or"}, {"em": "🩺", "nm": "A doctor", "b": "or"}, {"em": "👔", "nm": "A collar", "b": "ar"}, {"em": "📅", "nm": "A calendar", "b": "ar"}, {"em": "🖼️", "nm": "A picture", "b": "ure"}, {"em": "❄️", "nm": "Winter", "b": "er"}];
 const pg=document.getElementById('pickGrid');
 PICKS.forEach(pk=>{
   const d=document.createElement('div');
   d.className='pick';
-  d.innerHTML='<span class="em">'+pk.em+'</span><div class="nm">'+pk.nm+'</div>';
+  d.innerHTML='<span class="em">'+pk.em+'</span><div class="nm">'+esc(pk.nm)+'</div>';
   d.onclick=()=>{
     document.querySelectorAll('.pick').forEach(x=>x.classList.remove('sel'));
     d.classList.add('sel');
     document.getElementById('pickOut').style.display='block';
     document.getElementById('pickText').innerHTML=
-      'Draw <b style="color:var(--gold)">'+pk.nm+'</b>. Write the name inside the picture, and make the <b style="color:var(--gold)">'+
-      pk.b+'</b> much bigger than all the other letters.';
+      'Draw <b style="color:var(--gold)">'+esc(pk.nm)+'</b>. Write the word underneath, with __B__ much bigger than the rest.'.replace('__B__','<b style="color:var(--gold)">'+esc(pk.b)+'</b>');
   };
   pg.appendChild(d);
 });
 
-/* ---------------- nav ---------------- */
-const TOTAL=6;
+const TOTAL=5;
 function go(n){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));
   document.getElementById('s'+n).classList.add('on');
@@ -516,7 +449,6 @@ document.querySelectorAll('.dots').forEach(d=>{
     d.appendChild(x);
   }
 });
-function restart(){location.reload();}
 </script>
 </body>
 </html>
