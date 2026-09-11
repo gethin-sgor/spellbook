@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Spellbook — Charms</title>
+<style>
+:root{
+  --bg:#0C1220; --card:#18223A; --card2:#212D4A; --line:#374566;
+  --gold:#F0C24E; --gold-dim:#B08F35; --cream:#F2F4FA; --muted:#A6B4D4;
+  --cyan:#6FD8F0; --green:#5FD6A4; --amber:#F0A94E; --pink:#FF8FB1;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  background:radial-gradient(1100px 780px at 50% -8%, #1E2C4E 0%, var(--bg) 62%);
+  background-attachment:fixed; color:var(--cream);
+  font-family:"Trebuchet MS",Verdana,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  min-height:100vh; overflow-x:hidden; position:relative; touch-action:manipulation;
+}
+body::before{content:'';position:fixed;inset:0;background-image:url('overlay-dark.png');
+  background-attachment:fixed;opacity:0.18;pointer-events:none;z-index:0}
+.wrap{position:relative;z-index:1;max-width:760px;margin:0 auto;padding:22px 18px 140px}
+
+.topnav{display:flex;gap:8px;justify-content:center;margin:0 0 18px;flex-wrap:wrap}
+.topnav a{font-size:13px;color:var(--muted);text-decoration:none;border:1px solid var(--line);
+  border-radius:20px;padding:7px 14px;background:rgba(0,0,0,.22);white-space:nowrap}
+.topnav a:active{transform:scale(.96);border-color:var(--gold-dim);color:var(--cream)}
+
+h1{font-size:clamp(27px,6.6vw,40px);line-height:1.15;margin:0 0 6px;color:var(--gold);letter-spacing:-.5px}
+h2{font-size:clamp(18px,4.4vw,23px);margin:0 0 10px}
+p{font-size:clamp(16px,4vw,18px);margin:0 0 14px}
+.muted{color:var(--muted)}
+header{text-align:center;margin-bottom:4px}
+header .ic{font-size:52px;display:block;margin-bottom:6px}
+.sub2{font-size:14px;letter-spacing:3px;text-transform:uppercase;color:var(--gold-dim);font-weight:bold;margin:0 0 10px}
+.eyebrow{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gold-dim);font-weight:bold;margin-bottom:8px}
+
+.panel{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px 16px;margin:16px 0}
+textarea{width:100%;background:rgba(0,0,0,.3);border:1px solid var(--line);border-radius:14px;
+  color:var(--cream);font-family:inherit;font-size:18px;padding:14px;resize:vertical;min-height:78px;line-height:1.5}
+textarea:focus{outline:none;border-color:var(--gold-dim)}
+
+.btn{display:block;width:100%;border:0;cursor:pointer;font-family:inherit;
+  background:linear-gradient(180deg,var(--gold),#D3A238);color:#2A2416;
+  font-size:19px;font-weight:bold;padding:16px 20px;border-radius:16px;
+  box-shadow:0 5px 0 #8A6E2A;margin-top:12px;text-align:center;text-decoration:none;
+  transition:transform .08s,box-shadow .08s}
+.btn:active{transform:translateY(4px);box-shadow:0 1px 0 #8A6E2A}
+.btn:disabled{opacity:.35;box-shadow:0 5px 0 #6A5520;cursor:not-allowed}
+.btn.ghostbtn{background:transparent;color:var(--muted);box-shadow:none;border:1px solid var(--line);
+  font-size:16px;font-weight:normal;padding:12px}
+.btn.ghostbtn:active{transform:none}
+.btn.small{font-size:15px;padding:11px;box-shadow:0 3px 0 #8A6E2A}
+.btn.cyan{background:linear-gradient(180deg,var(--cyan),#3FA8C4);color:#04202B;box-shadow:0 5px 0 #2A7186}
+.btn.cyan:active{box-shadow:0 1px 0 #2A7186}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+/* the sentence line */
+.line{display:flex;flex-wrap:wrap;gap:8px;min-height:62px;padding:12px;margin:4px 0 6px;
+  background:rgba(0,0,0,.25);border:2px dashed var(--line);border-radius:16px;align-items:center}
+.slot{min-width:58px;min-height:42px;border:1px dashed rgba(255,255,255,.14);border-radius:10px;
+  display:flex;align-items:center;justify-content:center;transition:.15s;padding:0 2px}
+.slot.hot{border-color:var(--gold);background:rgba(240,194,78,.14);transform:scale(1.06)}
+.slot.filled{border:none;min-width:0}
+.slot.ok .word{background:linear-gradient(180deg,#4FBE8C,#35916A);color:#042017}
+.slot.no .word{background:linear-gradient(180deg,#D99240,#B0722C);color:#2B1704}
+
+.bank{display:flex;flex-wrap:wrap;gap:9px;margin:10px 0 0;min-height:44px}
+.word{display:inline-block;background:linear-gradient(180deg,#5EC6DE,#3B9CBA);color:#041E29;
+  border-radius:11px;padding:10px 14px;font-size:clamp(16px,4.3vw,19px);font-weight:bold;
+  cursor:grab;user-select:none;line-height:1.15;border:1px solid rgba(0,0,0,.3);position:relative}
+.word:active{transform:scale(.95)}
+.word.used{opacity:.25;pointer-events:none}
+.word.punc{background:linear-gradient(180deg,#F0C24E,#CF9F2F);color:#241B05;min-width:44px;text-align:center}
+.ghost{position:fixed;z-index:99;pointer-events:none;opacity:.95;
+  box-shadow:0 10px 24px rgba(0,0,0,.55);transform:translate(-50%,-50%) scale(1.06)}
+
+.fb{min-height:30px;text-align:center;font-size:17px;margin-top:8px}
+.fb .ok{color:var(--green);font-weight:bold}
+.fb .no{color:var(--amber);font-weight:bold}
+
+.final{background:linear-gradient(180deg,#1E3B2E,#16281F);border:2px solid var(--green);
+  border-radius:18px;padding:20px 16px;margin:14px 0;text-align:center;display:none;animation:pop .35s ease}
+@keyframes pop{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:none}}
+.final .sentence{font-size:clamp(20px,5.4vw,28px);font-weight:bold;line-height:1.35;margin-bottom:6px}
+.final .tag{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--green);font-weight:bold;margin-bottom:10px}
+
+.spot{background:rgba(0,0,0,.2);border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:12px;display:none}
+.spot h4{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gold-dim);margin:0 0 9px}
+.hit{display:flex;align-items:baseline;gap:9px;font-size:15px;margin-bottom:7px;color:var(--muted)}
+.hit b{color:var(--gold);font-size:17px}
+.hit .ln{margin-left:auto;font-size:12px;opacity:.8;white-space:nowrap}
+
+.kept{margin-top:8px}
+.kept .s{background:var(--card2);border:1px solid var(--line);border-radius:12px;
+  padding:10px 13px;font-size:16px;margin-bottom:7px;line-height:1.4}
+
+.note{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--gold-dim);
+  border-radius:12px;padding:14px 16px;margin:18px 0;font-size:15px;line-height:1.6;color:var(--muted)}
+.note b{color:var(--cream)}
+hr.sep{border:0;border-top:1px solid var(--line);margin:26px 0}
+.tiny{font-size:13px;color:var(--muted);opacity:.7;text-align:center;margin-top:20px}
+.hide{display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="topnav">
+  <a href="index.html">🏠 All lessons</a>
+  <a href="potions.html">🧪 Potions</a>
+</div>
+
+<header>
+  <span class="ic">🪄</span>
+  <h1>Charms</h1>
+  <p class="sub2">The Standard Book of Spells</p>
+  <p class="muted">Say a sentence out loud. It breaks into pieces. Put it back together in the right order — because in Charms, the order is the whole spell. <i>It's Levi-O-sa, not Levio-SAR.</i></p>
+</header>
+
+<!-- STEP 1 -->
+<div class="panel" id="step1">
+  <div class="eyebrow">Step one</div>
+  <h2>Say your sentence</h2>
+  <p class="muted" style="font-size:15px">Sofia says it out loud. Whoever is helping types it in exactly as she said it — mistakes and all.</p>
+  <textarea id="input" placeholder="The knight bought a phoenix feather."></textarea>
+  <button class="btn cyan hide" id="micBtn" onclick="listen()">🎙️ Or speak it instead</button>
+  <div class="fb" id="micFb"></div>
+  <button class="btn" onclick="shatter()">Break it into pieces →</button>
+</div>
+
+<!-- STEP 2 -->
+<div class="panel hide" id="step2">
+  <div class="eyebrow">Step two</div>
+  <h2 id="step2h">Put it back in order</h2>
+  <p class="muted" style="font-size:15px">Tap a word to place it, or drag it where you want it. Tap a placed word to take it back.
+  <br><b style="color:var(--cyan)">Clue:</b> one word has a capital letter. That is what capitals are for — they tell you where a sentence begins.</p>
+
+  <div class="line" id="line"></div>
+  <div class="bank" id="bank"></div>
+
+  <div class="fb" id="fb"></div>
+  <button class="btn" id="checkBtn" onclick="check()">Check it →</button>
+  <div class="row2">
+    <button class="btn ghostbtn small" onclick="reshuffle()">Shuffle again</button>
+    <button class="btn ghostbtn small" onclick="restart()">New sentence</button>
+  </div>
+</div>
+
+<!-- FINAL -->
+<div class="final" id="final">
+  <div class="tag" id="finalTag">✓ That's the spell</div>
+  <div class="sentence" id="finalText"></div>
+  <button class="btn cyan small" onclick="speak()">🔊 Hear it read back</button>
+  <button class="btn small" onclick="restart()">Another one →</button>
+</div>
+
+<div class="spot" id="spot">
+  <h4>Patterns you already know</h4>
+  <div id="spotList"></div>
+</div>
+
+<div class="panel" id="keptPanel" style="display:none">
+  <div class="eyebrow">Sentences you've built</div>
+  <div class="kept" id="kept"></div>
+</div>
+
+<div class="note">
+  <b>For the tutor.</b> This is not a spelling activity — it is a <b>holding</b> activity. Sofia can compose a good
+  sentence out loud and then lose half of it on the way to the page. The cards keep the sentence still while she
+  works on the order, the capital letter and the full stop.
+  <br><br>
+  Type what she actually said, not a tidied-up version. If the sentence is long, that is fine — the whole point is
+  that she no longer has to hold it in her head.
+</div>
+
+<hr class="sep">
+<p><a href="index.html" class="btn ghostbtn">← Back to all lessons</a></p>
+<p class="tiny">The Spellbook · Charms</p>
+
+</div>
+
+<script>
+/* ---------- pattern spotter: ties words back to the twelve lessons ---------- */
+const PATTERNS=[
+ {re:/^kn/i,           t:'silent k',              l:2},
+ {re:/^wr/i,           t:'silent w',              l:2},
+ {re:/^gn/i,           t:'silent g',              l:2},
+ {re:/mb$/i,           t:'silent b',              l:2},
+ {re:/ough/i,          t:'the Sought house of OU',l:5},
+ {re:/ght/i,           t:'silent gh',             l:2},
+ {re:/^ph|ph/i,        t:'ph says f — Greek',     l:11},
+ {re:/^rh/i,           t:'rh says r — Greek',     l:11},
+ {re:/^ps/i,           t:'ps says s — Greek',     l:11},
+ {re:/^(pn|mn)/i,      t:'silent first letter — Greek', l:11},
+ {re:/w(or)/i,         t:"Wormtail's rule: w + or", l:4},
+ {re:/(tion|sion|cian)$/i, t:'the /shun/ ending', l:7},
+ {re:/ou/i,            t:'one of the four OU houses', l:5},
+ {re:/(ies|ves)$/i,    t:'a plural that changed shape', l:8},
+ {re:/(port|duct|spect|vis|ject|mort|struct|script|dict|tract)/i, t:'a Latin root', l:1},
+ {re:/^(re|ex|de|pro|trans|im|sub|pre)[a-z]{4,}/i, t:'a prefix on the front', l:9},
+ {re:/[a-z]{3}(er|or|ar|ure)$/i, t:'the lazy vowel ending', l:12}
+];
+
+let words=[],placed=[],shuffled=[],kept=[],punctuation='.';
+
+const $=id=>document.getElementById(id);
+const esc=s=>(s||'').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+
+/* ---------- speech in, if the browser can ---------- */
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+if(SR) $('micBtn').classList.remove('hide');
+function listen(){
+  const r=new SR(); r.lang='en-GB'; r.interimResults=false;
+  $('micFb').innerHTML='<span class="ok">Listening…</span>';
+  r.onresult=e=>{ $('input').value=e.results[0][0].transcript; $('micFb').innerHTML=''; };
+  r.onerror=()=>{ $('micFb').innerHTML='<span class="no">Didn\u2019t catch that — type it instead.</span>'; };
+  r.onend=()=>{ if($('micFb').textContent==='Listening…') $('micFb').innerHTML=''; };
+  try{ r.start(); }catch(e){ $('micFb').innerHTML='<span class="no">Microphone unavailable — type it instead.</span>'; }
+}
+
+/* ---------- step 1 -> 2 ---------- */
+function shatter(){
+  let raw=$('input').value.trim().replace(/\s+/g,' ');
+  if(!raw){ $('input').focus(); return; }
+  const m=raw.match(/([.!?])\s*$/);
+  punctuation = m ? m[1] : '.';
+  raw = raw.replace(/\s*[.!?]+\s*$/,'');
+  words = raw.split(' ').filter(Boolean);
+  if(words.length<2){ $('input').focus(); return; }
+  // words stay exactly as spoken: a proper noun keeps its capital, and the
+  // capital on the first word is a legitimate clue rather than a giveaway
+  placed = new Array(words.length+1).fill(null);   // +1 for the punctuation slot
+  reshuffle();
+  $('step1').classList.add('hide'); $('step2').classList.remove('hide');
+  $('final').style.display='none'; $('spot').style.display='none';
+  window.scrollTo({top:0,behavior:'instant'});
+}
+function reshuffle(){
+  shuffled = words.map((w,i)=>({w:w,i:i}));
+  for(let i=shuffled.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[shuffled[i],shuffled[j]]=[shuffled[j],shuffled[i]];}
+  placed = new Array(words.length+1).fill(null);
+  render();
+}
+function restart(){
+  $('step2').classList.add('hide'); $('final').style.display='none'; $('spot').style.display='none';
+  $('step1').classList.remove('hide'); $('input').value=''; $('fb').innerHTML='';
+  $('input').focus(); window.scrollTo({top:0,behavior:'instant'});
+}
+
+/* ---------- render ---------- */
+function render(){
+  const line=$('line'); line.innerHTML='';
+  placed.forEach((p,slot)=>{
+    const d=document.createElement('div');
+    d.className='slot'+(p!==null?' filled':''); d.dataset.slot=slot;
+    if(p!==null){
+      const isPunc = p==='punc';
+      const w=document.createElement('span');
+      w.className='word'+(isPunc?' punc':'');
+      w.textContent = isPunc?punctuation:words[p];
+      w.onclick=()=>{ placed[slot]=null; $('fb').innerHTML=''; render(); };
+      d.appendChild(w);
+    }
+    line.appendChild(d);
+  });
+  const bank=$('bank'); bank.innerHTML='';
+  shuffled.forEach(o=>{
+    const b=document.createElement('div');
+    b.className='word'+(placed.includes(o.i)?' used':'');
+    b.textContent=o.w; b.dataset.idx=o.i;
+    b.onclick=()=>place(o.i);
+    drag(b,o.i);
+    bank.appendChild(b);
+  });
+  const p=document.createElement('div');
+  p.className='word punc'+(placed.includes('punc')?' used':'');
+  p.textContent=punctuation; p.dataset.idx='punc';
+  p.onclick=()=>place('punc');
+  drag(p,'punc');
+  bank.appendChild(p);
+}
+function place(idx,slot){
+  if(placed.includes(idx))return;
+  if(slot===undefined||placed[slot]!==null) slot = placed.indexOf(null);
+  if(slot<0)return;
+  placed[slot]=idx; $('fb').innerHTML=''; render();
+}
+
+/* ---------- drag (pointer events: mouse and finger) ---------- */
+function drag(el,idx){
+  let g=null,sx=0,sy=0,moved=false;
+  el.addEventListener('pointerdown',e=>{
+    if(el.classList.contains('used'))return;
+    sx=e.clientX; sy=e.clientY; moved=false;
+    el.setPointerCapture(e.pointerId);
+    g=el.cloneNode(true); g.className=el.className+' ghost';
+    g.style.left=e.clientX+'px'; g.style.top=e.clientY+'px';
+    document.body.appendChild(g);
+  });
+  el.addEventListener('pointermove',e=>{
+    if(!g)return;
+    if(Math.abs(e.clientX-sx)>7||Math.abs(e.clientY-sy)>7)moved=true;
+    g.style.left=e.clientX+'px'; g.style.top=e.clientY+'px';
+    document.querySelectorAll('.slot').forEach(s=>{
+      const r=s.getBoundingClientRect();
+      s.classList.toggle('hot', e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom);
+    });
+  });
+  const done=e=>{
+    if(!g)return;
+    g.remove(); g=null;
+    let target=null;
+    document.querySelectorAll('.slot').forEach(s=>{
+      const r=s.getBoundingClientRect();
+      if(e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom) target=+s.dataset.slot;
+      s.classList.remove('hot');
+    });
+    if(target!==null) place(idx,target);
+    else if(!moved) place(idx);
+  };
+  el.addEventListener('pointerup',done);
+  el.addEventListener('pointercancel',()=>{ if(g){g.remove();g=null;}
+    document.querySelectorAll('.slot').forEach(s=>s.classList.remove('hot')); });
+}
+
+/* ---------- check ---------- */
+function check(){
+  if(placed.includes(null)){
+    $('fb').innerHTML='<span class="no">Not finished yet — there\u2019s still a gap.</span>';
+    return;
+  }
+  let right=0;
+  const slots=[...document.querySelectorAll('.slot')];
+  placed.forEach((p,i)=>{
+    const want = i===words.length ? 'punc' : i;
+    const ok = p===want;
+    if(ok) right++;
+    slots[i].classList.add(ok?'ok':'no');
+  });
+  const total=placed.length;
+  if(right===total){
+    $('fb').innerHTML='<span class="ok">Every piece in its place.</span>';
+    setTimeout(finish,700);
+  }else{
+    $('fb').innerHTML='<span class="no">'+right+' of '+total+' in the right place. Tap an orange one to move it.</span>';
+    setTimeout(()=>slots.forEach(s=>s.classList.remove('ok','no')),1800);
+  }
+}
+
+/* ---------- finished ---------- */
+function sentenceText(){
+  const w=words.slice();
+  w[0]=w[0].charAt(0).toUpperCase()+w[0].slice(1);   // in case it was typed lower case
+  return w.join(' ')+punctuation;
+}
+function finish(){
+  const text=sentenceText();
+  $('step2').classList.add('hide');
+  $('finalText').textContent=text;
+  $('final').style.display='block';
+  if(!kept.includes(text)){
+    kept.push(text);
+    const box=$('kept'); box.innerHTML='';
+    kept.forEach(s=>{const d=document.createElement('div');d.className='s';d.textContent=s;box.appendChild(d);});
+    $('keptPanel').style.display='block';
+  }
+  spot();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function spot(){
+  const list=$('spotList'); list.innerHTML='';
+  const seen=new Set(); let n=0;
+  words.forEach(raw=>{
+    const w=raw.replace(/[^A-Za-z'-]/g,'');
+    if(w.length<3||seen.has(w.toLowerCase()))return;
+    for(const p of PATTERNS){
+      if(p.re.test(w)){
+        seen.add(w.toLowerCase());
+        const d=document.createElement('div');
+        d.className='hit';
+        d.innerHTML='<b>'+esc(w)+'</b><span>'+p.t+'</span><span class="ln">Lesson '+p.l+'</span>';
+        list.appendChild(d); n++;
+        break;
+      }
+    }
+  });
+  $('spot').style.display = n ? 'block' : 'none';
+}
+function speak(){
+  if(!('speechSynthesis' in window))return;
+  const u=new SpeechSynthesisUtterance(sentenceText());
+  u.lang='en-GB'; u.rate=0.85;
+  speechSynthesis.cancel(); speechSynthesis.speak(u);
+}
+</script>
+</body>
+</html>
